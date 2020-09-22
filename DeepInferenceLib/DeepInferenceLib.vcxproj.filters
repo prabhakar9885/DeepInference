@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{77d637ec-d143-4458-8196-6c585f44d22f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\NN">
+      <UniqueIdentifier>{e65e1995-37e0-40a4-a680-dd417639db65}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\NN\NN.cu">
+      <Filter>src\NN</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\NN\NN.cuh">
+      <Filter>src\NN</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shared\Activation.cuh" />
+    <ClInclude Include="src\Layer\Layer.cuh" />
+    <ClInclude Include="src\Layer\DenseLayer.cuh" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="src\Layer\Layer.cu" />
+    <CudaCompile Include="src\Layer\DenseLayer.cu" />
+  </ItemGroup>
+</Project>
