@@ -14,12 +14,7 @@ void Flatten::init()
 bool Flatten::canBeStackedOn(const Layer* prevLayer) const
 {
     LayerType typeOfPrevLayer = Utills::Layers::getLayerType(prevLayer);
-    bool canBeStacked = false;
-    if (typeOfPrevLayer == LayerType::CONV)
-    {
-        canBeStacked = true;
-    }
-    return canBeStacked;
+    return (typeOfPrevLayer == LayerType::CONV);
 }
 
 void Flatten::forward(const std::vector<int> &input) const

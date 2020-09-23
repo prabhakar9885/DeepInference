@@ -1,7 +1,7 @@
 #ifndef LAYER_CUH
 #define LAYER_CUH
 
-#include <Shared\Activation.cuh>
+#include "Shared/Activation.cuh"
 #include <vector>
 
 enum class LayerType

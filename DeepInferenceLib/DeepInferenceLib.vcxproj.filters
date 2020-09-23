@@ -18,17 +18,19 @@
       <Filter>src\NN</Filter>
     </ClInclude>
     <ClInclude Include="src\Shared\Activation.cuh" />
-    <ClInclude Include="src\Layer\Layer.cuh" />
-    <ClInclude Include="src\Layer\DenseLayer.cuh" />
     <ClInclude Include="src\Shared\Utills.cuh" />
-    <ClInclude Include="src\Layer\ConvLayer.cuh" />
-    <ClInclude Include="src\Layer\Flatten.cuh" />
+    <ClInclude Include="src\NN\Layer\ConvLayer.cuh" />
+    <ClInclude Include="src\NN\Layer\DenseLayer.cuh" />
+    <ClInclude Include="src\NN\Layer\Flatten.cuh" />
+    <ClInclude Include="src\NN\Layer\Layer.cuh" />
+    <ClInclude Include="src\CudaEngine\Layers\CuLayer.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="src\Layer\Layer.cu" />
-    <CudaCompile Include="src\Layer\DenseLayer.cu" />
     <CudaCompile Include="src\Shared\Utills.cu" />
-    <CudaCompile Include="src\Layer\ConvLayer.cu" />
-    <CudaCompile Include="src\Layer\Flatten.cu" />
+    <CudaCompile Include="src\NN\Layer\ConvLayer.cu" />
+    <CudaCompile Include="src\NN\Layer\DenseLayer.cu" />
+    <CudaCompile Include="src\NN\Layer\Flatten.cu" />
+    <CudaCompile Include="src\NN\Layer\Layer.cu" />
+    <CudaCompile Include="src\CudaEngine\Layers\CuLayer.cu" />
   </ItemGroup>
 </Project>

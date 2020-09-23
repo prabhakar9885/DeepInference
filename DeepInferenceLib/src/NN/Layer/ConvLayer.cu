@@ -1,7 +1,6 @@
 #include "ConvLayer.cuh"
 
-ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int padding, int dilation, Activation activation) :
-    inChannels{ inChannels }, outChannels{ outChannels }, H{ H }, W{ W }, padding{ padding }, dilation{ dilation }, activation{ activation }
+ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int padding, int dilation, Activation activation) : inChannels{ inChannels }, outChannels{ outChannels }, H{ H }, W{ W }, padding{ padding }, dilation{ dilation }, activation{ activation }
 {
 }
 

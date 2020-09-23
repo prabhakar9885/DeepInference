@@ -1,8 +1,8 @@
 #ifndef FLATTEN_CUH
 #define FLATTEN_CUH
 
-#include "Layer/Layer.cuh"
-#include "Layer/DenseLayer.cuh"
+#include "NN/Layer/Layer.cuh"
+#include "NN/Layer/DenseLayer.cuh"
 #include "Shared/Utills.cuh"
 
 class Flatten final : public Layer

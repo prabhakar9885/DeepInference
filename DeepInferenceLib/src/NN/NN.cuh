@@ -1,7 +1,7 @@
 #ifndef NN_CUH
 #define NN_CUH
 
-#include "Layer/Layer.cuh"
+#include "NN/Layer/Layer.cuh"
 #include "Shared/Utills.cuh"
 #include <list>
 #include <memory>

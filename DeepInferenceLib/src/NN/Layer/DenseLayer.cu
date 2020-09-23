@@ -14,12 +14,7 @@ void DenseLayer::init()
 bool DenseLayer::canBeStackedOn(const Layer* prevLayer) const
 {
     LayerType typeOfPrevLayer = Utills::Layers::getLayerType(prevLayer);
-    bool canBeStacked = false;
-    if (typeOfPrevLayer == LayerType::DENSE || typeOfPrevLayer == LayerType::FLATTEN)
-    {
-        canBeStacked = true;
-    }
-    return canBeStacked;
+    return  (typeOfPrevLayer == LayerType::DENSE || typeOfPrevLayer == LayerType::FLATTEN);
 }
 
 void DenseLayer::forward(const std::vector<int> &input) const

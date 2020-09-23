@@ -79,10 +79,11 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Layer\ConvLayer.cuh" />
-    <ClInclude Include="src\Layer\DenseLayer.cuh" />
-    <ClInclude Include="src\Layer\Flatten.cuh" />
-    <ClInclude Include="src\Layer\Layer.cuh" />
+    <ClInclude Include="src\CudaEngine\Layers\CuLayer.cuh" />
+    <ClInclude Include="src\NN\Layer\ConvLayer.cuh" />
+    <ClInclude Include="src\NN\Layer\DenseLayer.cuh" />
+    <ClInclude Include="src\NN\Layer\Flatten.cuh" />
+    <ClInclude Include="src\NN\Layer\Layer.cuh" />
     <ClInclude Include="src\Shared\Activation.cuh" />
     <ClInclude Include="src\NN\NN.cuh" />
     <ClInclude Include="src\Shared\Utills.cuh" />
@@ -91,10 +92,11 @@
     <ClCompile Include="src\NN\NN.cu" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="src\Layer\ConvLayer.cu" />
-    <CudaCompile Include="src\Layer\DenseLayer.cu" />
-    <CudaCompile Include="src\Layer\Flatten.cu" />
-    <CudaCompile Include="src\Layer\Layer.cu" />
+    <CudaCompile Include="src\CudaEngine\Layers\CuLayer.cu" />
+    <CudaCompile Include="src\NN\Layer\ConvLayer.cu" />
+    <CudaCompile Include="src\NN\Layer\DenseLayer.cu" />
+    <CudaCompile Include="src\NN\Layer\Flatten.cu" />
+    <CudaCompile Include="src\NN\Layer\Layer.cu" />
     <CudaCompile Include="src\Shared\Utills.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

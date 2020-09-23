@@ -1,10 +1,10 @@
 #ifndef UTILLS_CUH
 #define UTILLS_CUH
 
-#include "Layer/Layer.cuh"
-#include "Layer/ConvLayer.cuh"
-#include "Layer/Flatten.cuh"
-#include "Layer/DenseLayer.cuh"
+#include "NN/Layer/Layer.cuh"
+#include "NN/Layer/ConvLayer.cuh"
+#include "NN/Layer/Flatten.cuh"
+#include "NN/Layer/DenseLayer.cuh"
 #include <typeinfo>
 
 namespace Utills

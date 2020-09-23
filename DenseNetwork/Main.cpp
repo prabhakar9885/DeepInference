@@ -1,7 +1,7 @@
 #include "NN/NN.cuh"
-#include "Layer/DenseLayer.cuh"
-#include "Layer/ConvLayer.cuh"
-#include "Layer/Flatten.cuh"
+#include "NN/Layer/DenseLayer.cuh"
+#include "NN/Layer/ConvLayer.cuh"
+#include "NN/Layer/Flatten.cuh"
 #include <iostream>
 
 void main()
