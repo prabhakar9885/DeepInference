@@ -22,9 +22,11 @@ class Layer
 private:
 
 public:
-    virtual void init() = 0;
+    virtual ~Layer();
+    virtual void init(const std::vector<float> &weight, const std::vector<float> &bias) = 0;
+    virtual void initAsInputLayer() = 0;
     virtual bool canBeStackedOn(const Layer* prevLayer) const = 0;
-    virtual void forward(const std::vector<int> &input) const = 0;
+    virtual float* forward(const float* input) const = 0;
     virtual void* getOutput() const = 0;
 };
 

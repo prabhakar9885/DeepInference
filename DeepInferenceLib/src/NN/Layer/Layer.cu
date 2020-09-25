@@ -3,5 +3,8 @@
 
 #include "Layer.cuh"
 
+Layer::~Layer()
+{
+}
 
 #endif // !LAYER_CU

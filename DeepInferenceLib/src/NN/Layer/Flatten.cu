@@ -7,8 +7,13 @@ Flatten::Flatten():size{0}, activation{Activation::NONE}
 {
 }
 
-void Flatten::init()
+void Flatten::init(const std::vector<float>& weight, const std::vector<float>& bias)
 {
+}
+
+void Flatten::initAsInputLayer()
+{
+    throw "This layer can't be an input(0th) layer";
 }
 
 bool Flatten::canBeStackedOn(const Layer* prevLayer) const
@@ -17,8 +22,9 @@ bool Flatten::canBeStackedOn(const Layer* prevLayer) const
     return (typeOfPrevLayer == LayerType::CONV);
 }
 
-void Flatten::forward(const std::vector<int> &input) const
+float* Flatten::forward(const float* input) const
 {
+    return nullptr;
 }
 
 void* Flatten::getOutput() const

@@ -58,6 +58,9 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
     </CudaCompile>
+    <CudaLink>
+      <AdditionalDependencies>cudnn.lib;cudart.lib;cublas.lib;</AdditionalDependencies>
+    </CudaLink>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -79,6 +82,8 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\CudaEngine\CuUtills.cuh" />
+    <ClInclude Include="src\CudaEngine\Layers\CuDenseLayer.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuLayer.cuh" />
     <ClInclude Include="src\NN\Layer\ConvLayer.cuh" />
     <ClInclude Include="src\NN\Layer\DenseLayer.cuh" />
@@ -86,12 +91,15 @@
     <ClInclude Include="src\NN\Layer\Layer.cuh" />
     <ClInclude Include="src\Shared\Activation.cuh" />
     <ClInclude Include="src\NN\NN.cuh" />
+    <ClInclude Include="src\Shared\DataStructs.cuh" />
     <ClInclude Include="src\Shared\Utills.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\NN\NN.cu" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="src\CudaEngine\CuUtills.cu" />
+    <CudaCompile Include="src\CudaEngine\Layers\CuDenseLayer.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuLayer.cu" />
     <CudaCompile Include="src\NN\Layer\ConvLayer.cu" />
     <CudaCompile Include="src\NN\Layer\DenseLayer.cu" />

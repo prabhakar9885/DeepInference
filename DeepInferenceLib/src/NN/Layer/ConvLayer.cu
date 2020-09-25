@@ -16,12 +16,17 @@ bool ConvLayer::canBeStackedOn(const Layer* prevLayer) const
     return canBeStacked;
 }
 
-void ConvLayer::init()
+void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> &bias)
 {
 }
 
-void ConvLayer::forward(const std::vector<int> &input) const
+void ConvLayer::initAsInputLayer()
 {
+}
+
+float* ConvLayer::forward(const float* input) const
+{
+    return nullptr;
 }
 
 void* ConvLayer::getOutput() const

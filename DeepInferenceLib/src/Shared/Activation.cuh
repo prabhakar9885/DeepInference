@@ -7,7 +7,6 @@ enum class Activation
 {
     SIGMOID,
     ReLU,
-    SOFTMAX,
     NONE
 };
 

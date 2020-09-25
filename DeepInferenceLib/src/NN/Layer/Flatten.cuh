@@ -12,9 +12,10 @@ private:
     Activation activation;
 public:
     Flatten();
-    void init() override;
+    void init(const std::vector<float>& weight, const std::vector<float>& bias) override;
+    void initAsInputLayer() override;
     bool canBeStackedOn(const Layer* prevLayer) const override;
-    void forward(const std::vector<int> &input) const override;
+    float* forward(const float* input) const override;
     void* getOutput() const override;
 };
 
