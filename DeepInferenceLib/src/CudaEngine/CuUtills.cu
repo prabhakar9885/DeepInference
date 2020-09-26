@@ -34,6 +34,5 @@ void CuUtills::computeActivation(float*& x, int xSize, Activation activation)
 		throw "Unidentified Activation type";
 	}
 
-	cudaDeviceSynchronize();
 
 }
