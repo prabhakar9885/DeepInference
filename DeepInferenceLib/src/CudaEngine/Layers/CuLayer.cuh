@@ -1,3 +1,6 @@
+#ifndef CULAYER_CUH
+#define CULAYER_CUH
+
 #include <algorithm>
 #include <vector>
 #include <iostream>
@@ -12,5 +15,6 @@ public:
     bool isAnInputLayer();
     virtual float* compute(const float* x) = 0;
     virtual void releaseMem() = 0;
-    virtual std::vector<int> &getOutput() const = 0;
 };
+
+#endif // !CULAYER_CUH

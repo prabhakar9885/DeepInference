@@ -1,6 +1,6 @@
 #include "ConvLayer.cuh"
 
-ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int padding, int dilation, Activation activation) : inChannels{ inChannels }, outChannels{ outChannels }, H{ H }, W{ W }, padding{ padding }, dilation{ dilation }, activation{ activation }
+ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int padding, int stride, int dilation, Activation activation) : inChannels{ inChannels }, outChannels{ outChannels }, H{ H }, W{ W }, padding{ padding }, dilation{ dilation }, activation{ activation }
 {
 }
 
@@ -20,16 +20,7 @@ void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> 
 {
 }
 
-void ConvLayer::initAsInputLayer()
-{
-}
-
 float* ConvLayer::forward(const float* input) const
-{
-    return nullptr;
-}
-
-void* ConvLayer::getOutput() const
 {
     return nullptr;
 }

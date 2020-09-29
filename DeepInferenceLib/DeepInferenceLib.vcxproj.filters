@@ -22,20 +22,24 @@
     <ClInclude Include="src\NN\Layer\ConvLayer.cuh" />
     <ClInclude Include="src\NN\Layer\DenseLayer.cuh" />
     <ClInclude Include="src\NN\Layer\Flatten.cuh" />
-    <ClInclude Include="src\NN\Layer\Layer.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuLayer.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuDenseLayer.cuh" />
     <ClInclude Include="src\Shared\DataStructs.cuh" />
     <ClInclude Include="src\CudaEngine\CuUtills.cuh" />
+    <ClInclude Include="src\NN\Layer\InputLayer.cuh" />
+    <ClInclude Include="src\NN\Layer\AbstractLayers\ComputableLayer.cuh" />
+    <ClInclude Include="src\NN\Layer\AbstractLayers\Layer.cuh" />
+    <ClInclude Include="src\NN\Layer\AbstractLayers\PlaceholderLayer.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\Shared\Utills.cu" />
     <CudaCompile Include="src\NN\Layer\ConvLayer.cu" />
     <CudaCompile Include="src\NN\Layer\DenseLayer.cu" />
     <CudaCompile Include="src\NN\Layer\Flatten.cu" />
-    <CudaCompile Include="src\NN\Layer\Layer.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuLayer.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuDenseLayer.cu" />
     <CudaCompile Include="src\CudaEngine\CuUtills.cu" />
+    <CudaCompile Include="src\NN\Layer\InputLayer.cu" />
+    <CudaCompile Include="src\NN\Layer\AbstractLayers\Layer.cu" />
   </ItemGroup>
 </Project>

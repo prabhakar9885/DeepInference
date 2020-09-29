@@ -42,12 +42,12 @@ void NN::init(const std::vector<std::vector<float>> &weightsAndBias) const
     {
         auto weightsAndBiasIterator = weightsAndBias.begin();
         auto layerIterator = this->layers.begin();
-        Layer* inputLayer = *layerIterator;
-        inputLayer->initAsInputLayer();
+        InputLayer* inputLayer = dynamic_cast<InputLayer*>(*layerIterator);
+        inputLayer->init();
         layerIterator++;
         while (layerIterator != layers.end() && weightsAndBiasIterator != weightsAndBias.end())
         {
-            Layer* currentLayer = *layerIterator;
+            ComputableLayer* currentLayer = dynamic_cast<ComputableLayer*>(*layerIterator);
             const std::vector<float> &weight = *weightsAndBiasIterator;
             const std::vector<float> &bias = *(weightsAndBiasIterator + 1);
             currentLayer->init(weight, bias);

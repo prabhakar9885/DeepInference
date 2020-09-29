@@ -13,6 +13,8 @@ LayerType Utills::Layers::getLayerType(const Layer* layer)
         type = LayerType::FLATTEN;
     if (typeInfoOfLayer == typeid(DenseLayer))
         type = LayerType::DENSE;
+    if (typeInfoOfLayer == typeid(InputLayer))
+        type = LayerType::INPUT_LAYER;
     return type;
 }
 

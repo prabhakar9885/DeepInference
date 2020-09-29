@@ -1,7 +1,9 @@
 #ifndef NN_CUH
 #define NN_CUH
 
-#include "NN/Layer/Layer.cuh"
+#include "NN/Layer/AbstractLayers/Layer.cuh"
+#include "NN/Layer/AbstractLayers/ComputableLayer.cuh"
+#include "NN/Layer/InputLayer.cuh"
 #include "Shared/Utills.cuh"
 #include <algorithm>
 #include <list>

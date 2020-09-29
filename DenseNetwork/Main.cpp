@@ -1,4 +1,5 @@
 #include "NN/NN.cuh"
+#include "NN/Layer/InputLayer.cuh"
 #include "NN/Layer/DenseLayer.cuh"
 #include "NN/Layer/ConvLayer.cuh"
 #include "NN/Layer/Flatten.cuh"
@@ -43,7 +44,7 @@ void main()
     std::cout << out << "\n";
 */
 
-    Layer* layer0 = new DenseLayer(3, Activation::NONE); // Input layer
+    Layer* layer0 = new InputLayer(3, Activation::NONE); // Input layer
     nn.pushLayer(layer0);
 
     Layer* layer1 = new DenseLayer(5, Activation::SIGMOID);

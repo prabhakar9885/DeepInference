@@ -1,3 +1,5 @@
+#ifndef CUDENSELAYER_CUH
+#define CUDENSELAYER_CUH
 
 #include <cublas_v2.h>
 #include <cuda_runtime_api.h>
@@ -23,6 +25,7 @@ public:
     void initAsInputLayer();
     float* compute(const float* x);
     void releaseMem();
-    std::vector<int>& getOutput() const;
 };
 
+
+#endif // !CUDENSELAYER_CUH

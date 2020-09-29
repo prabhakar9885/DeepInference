@@ -1,3 +1,6 @@
+#ifndef CUUTILLS_CUH
+#define CUUTILLS_CUH
+
 #include "Shared/Activation.cuh"
 #include <cublas_v2.h>
 #include <cuda_runtime_api.h>
@@ -7,5 +10,6 @@
 class CuUtills
 {
 public:
-    static void computeActivation(float*& x, int xSize, Activation activation);
+	static void computeActivation(float*& x, int xSize, Activation activation);
 };
+#endif // !CUUTILLS_CUH
