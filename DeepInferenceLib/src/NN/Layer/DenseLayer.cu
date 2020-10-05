@@ -7,6 +7,12 @@ DenseLayer::DenseLayer(int size, Activation activation) : size{ size }, activati
 {
 }
 
+DenseLayer::DenseLayer(int size, Activation activation, int inputSize) : DenseLayer(size, activation)
+{
+    this->inputSizeIsSet = true;
+    this->inputSize = inputSize;
+}
+
 DenseLayer::~DenseLayer()
 {
     if(cuDenseLayer)
@@ -16,24 +22,34 @@ DenseLayer::~DenseLayer()
 
 void DenseLayer::init(const std::vector<float>& weight, const std::vector<float>& bias)
 {
-    int sizeOfPreviousLayer;
-    if (weight.size() % this->size != 0)
-        throw "Dimensionality of weights is not compatible with the layer-size";
-
-    this->cuDenseLayer = new CuDenseLayer(this->size, this->activation);
+    int prevLayerSize;
+    DenseLayer* prevLayer = dynamic_cast<DenseLayer*>(this->prevLayer);
+    if (prevLayer)
+    {
+        prevLayerSize = prevLayer->size;
+        this->cuDenseLayer = new CuDenseLayer(this->size, this->activation, prevLayer->cuDenseLayer);
+    }
+    else
+    {
+        prevLayerSize = this->inputSize;
+        this->cuDenseLayer = new CuDenseLayer(this->size, this->activation);
+    }
+    if (prevLayer && this->size * prevLayerSize != weight.size())
+        throw "WeightDimensionsInvalid: inputSize * sizeOfLayerToWhichInputIsGiven != NumberOfWeightsThatIsFedToFirstLayer";
+    this->cuDenseLayer->setSizeOfInput(prevLayerSize);
+    this->cuDenseLayer->allocMemForLayer();
     this->cuDenseLayer->init(weight.data(), weight.size(), bias.data(), bias.size());
-}
-
-void DenseLayer::initAsInputLayer()
-{
-    this->cuDenseLayer = new CuDenseLayer(this->size, this->activation);
-    this->cuDenseLayer->initAsInputLayer();
 }
 
 bool DenseLayer::canBeStackedOn(const Layer* prevLayer) const
 {
     LayerType typeOfPrevLayer = Utills::Layers::getLayerType(prevLayer);
     return  (typeOfPrevLayer == LayerType::DENSE || typeOfPrevLayer == LayerType::FLATTEN);
+}
+
+bool DenseLayer::hasInputLayer() const
+{
+    return this->inputSizeIsSet;
 }
 
 float* DenseLayer::forward(const float* input) const

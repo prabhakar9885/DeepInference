@@ -19,13 +19,14 @@ enum class MemLayout
 
 class Layer
 {
-private:
-
+protected:
+    Layer* prevLayer = nullptr;
 public:
     virtual ~Layer();
+    virtual bool hasInputLayer() const = 0;
     virtual void init(const std::vector<float> &weight, const std::vector<float> &bias) = 0;
-    virtual void initAsInputLayer() = 0;
     virtual bool canBeStackedOn(const Layer* prevLayer) const = 0;
+    void setPrevLayer(Layer* prevLayer);
     virtual float* forward(const float* input) const = 0;
     virtual void* getOutput() const = 0;
 };

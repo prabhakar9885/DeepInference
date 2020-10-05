@@ -16,7 +16,6 @@ public:
     ConvLayer(int inChannels, int outChannels, int H, int W, int padding, int dilation, Activation activation);
     bool canBeStackedOn(const Layer* prevLayer) const;
     void init(const std::vector<float> &weight, const std::vector<float> &bias) override;
-    void initAsInputLayer() override;
     float* forward(const float* input) const override;
     void* getOutput() const override;
 };
