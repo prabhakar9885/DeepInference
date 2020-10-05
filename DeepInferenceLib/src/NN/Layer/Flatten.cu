@@ -11,11 +11,6 @@ void Flatten::init(const std::vector<float>& weight, const std::vector<float>& b
 {
 }
 
-void Flatten::initAsInputLayer()
-{
-    throw "This layer can't be an input(0th) layer";
-}
-
 bool Flatten::canBeStackedOn(const Layer* prevLayer) const
 {
     LayerType typeOfPrevLayer = Utills::Layers::getLayerType(prevLayer);

@@ -13,7 +13,6 @@ private:
 public:
     Flatten();
     void init(const std::vector<float>& weight, const std::vector<float>& bias) override;
-    void initAsInputLayer() override;
     bool canBeStackedOn(const Layer* prevLayer) const override;
     float* forward(const float* input) const override;
     void* getOutput() const override;

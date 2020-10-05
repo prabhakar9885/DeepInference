@@ -31,33 +31,35 @@ NN::~NN()
 void NN::pushLayer(Layer* layer)
 {
     if (layer != nullptr)
-        layers.push_back(layer);
+    {
+        if (this->layers.size() && layer->hasInputLayer())
+            throw "Intermediate layers should not have an input-size set";
+        else if (layer->hasInputLayer())
+            layers.push_back(layer);
+        else if (layer->canBeStackedOn(this->layers.back()))
+        {
+            layer->setPrevLayer(layers.back());
+            layers.push_back(layer);
+        }
+        else
+            throw "Can't stack the layer";
+    }
     else
         throw "Layer can't be null";
 }
 
-void NN::init(const std::vector<std::vector<float>> &weightsAndBias) const
+void NN::init(const std::vector<std::vector<float>>& weightsAndBias) const
 {
-    if (isNetworkValid()) 
+    auto weightsAndBiasIterator = weightsAndBias.begin();
+    auto layerIterator = this->layers.begin();
+    while (layerIterator != layers.end() && weightsAndBiasIterator != weightsAndBias.end())
     {
-        auto weightsAndBiasIterator = weightsAndBias.begin();
-        auto layerIterator = this->layers.begin();
-        Layer* inputLayer = *layerIterator;
-        inputLayer->initAsInputLayer();
+        Layer* currentLayer = *layerIterator;
+        const std::vector<float>& weight = *weightsAndBiasIterator;
+        const std::vector<float>& bias = *(weightsAndBiasIterator + 1);
+        currentLayer->init(weight, bias);
+        weightsAndBiasIterator += 2;
         layerIterator++;
-        while (layerIterator != layers.end() && weightsAndBiasIterator != weightsAndBias.end())
-        {
-            Layer* currentLayer = *layerIterator;
-            const std::vector<float> &weight = *weightsAndBiasIterator;
-            const std::vector<float> &bias = *(weightsAndBiasIterator + 1);
-            currentLayer->init(weight, bias);
-            weightsAndBiasIterator += 2;
-            layerIterator++;
-        }
-    }
-    else
-    {
-        throw "InvalidNetworkException";
     }
 }
 

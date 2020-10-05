@@ -1,12 +1,7 @@
 
 #include "CuLayer.cuh"
 
-void CuLayer::initAsInputLayer()
-{
-    this->isInputLayer = true;
-}
-
-bool CuLayer::isAnInputLayer()
+bool CuLayer::hasInputLayer()
 {
     return this->isInputLayer;
 }

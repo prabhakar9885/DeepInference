@@ -20,10 +20,6 @@ void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> 
 {
 }
 
-void ConvLayer::initAsInputLayer()
-{
-}
-
 float* ConvLayer::forward(const float* input) const
 {
     return nullptr;

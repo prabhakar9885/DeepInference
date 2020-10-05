@@ -6,6 +6,12 @@ cublasHandle_t CuDenseLayer::handle;
 
 CuDenseLayer::CuDenseLayer(int sizeOfCurrentLayer, Activation activation) : sizeOfCurrentLayer{ sizeOfCurrentLayer }, activation{ activation }
 {
+    this->isInputLayer = true;
+}
+
+CuDenseLayer::CuDenseLayer(int sizeOfCurrentLayer, Activation activation, CuLayer* prevLayer) : sizeOfCurrentLayer{ sizeOfCurrentLayer }, activation{ activation }
+{
+    this->prevLayer = prevLayer;
 }
 
 CuDenseLayer::~CuDenseLayer()
@@ -21,18 +27,38 @@ CuDenseLayer::~CuDenseLayer()
         std::cerr << "Failed to release device memory. Status code: " << status;
     }
     cublasStatus_t cublasStatus;
-    if (this->isAnInputLayer() && (cublasStatus = cublasDestroy(CuDenseLayer::handle)) != CUBLAS_STATUS_SUCCESS)
+    if (this->hasInputLayer() && (cublasStatus = cublasDestroy(CuDenseLayer::handle)) != CUBLAS_STATUS_SUCCESS)
     {
         std::cerr << "Failed to destroy cublas-handle. Status code: " << cublasStatus;
     }
+}
+
+void CuDenseLayer::setSizeOfInput(int sizeOfInput)
+{
+    this->sizeOfInput = sizeOfInput;
+}
+
+void CuDenseLayer::allocMemForLayer()
+{
+    if (this->hasInputLayer())
+    {
+        if (cudaSuccess != cudaMallocManaged((void**)&inputDevice, this->sizeOfInput * sizeof(float)))
+            throw "Unable to allocate Input memory";
+        cublasCreate(&CuDenseLayer::handle);
+    }
+    this->aDeviceCount = this->sizeOfCurrentLayer * this->sizeOfInput;
+    if (cudaSuccess != cudaMallocManaged((void**)&aDevice, this->aDeviceCount * sizeof(float)))
+        throw "Unable to allocate memory";
+    if (cudaSuccess != cudaMallocManaged((void**)&bDevice, this->sizeOfCurrentLayer * sizeof(float)))
+        throw "Unable to allocate memory";
 }
 
 void CuDenseLayer::init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias)
 {
     if (this->sizeOfCurrentLayer != numberOfBias)
         throw "Size of bias and the number of nodes in the layer should match";
-
-    this->aDeviceCount = numberOfWeights;
+    if (this->aDeviceCount != numberOfWeights)
+        throw " sizeOfPrevLayer * sizeOfCurrLayer != numberOfWeights";
     if (cudaSuccess != cudaMallocManaged((void**)&aDevice, this->aDeviceCount * sizeof(float)))
         throw "Unable to allocate memory";
     if (cudaSuccess != cudaMallocManaged((void**)&bDevice, this->sizeOfCurrentLayer * sizeof(float)))
@@ -54,18 +80,10 @@ void CuDenseLayer::init(const float* weights, const int numberOfWeights, const f
     }
 }
 
-void CuDenseLayer::initAsInputLayer()
-{
-    CuLayer::initAsInputLayer();
-    if (cudaSuccess != cudaMallocManaged((void**)&bDevice, this->sizeOfCurrentLayer * sizeof(float)))
-        throw "Unable to allocate memory";
-    cublasCreate(&CuDenseLayer::handle);
-}
-
 float* CuDenseLayer::compute(const float* xDevice)
 {
     float alpha = 1, beta = 1;
-    if (this->isAnInputLayer())
+    if (this->hasInputLayer())
         cublasSetVector(this->sizeOfCurrentLayer, sizeof(float), xDevice, 1, this->bDevice, 1);
     else
     {

@@ -43,10 +43,10 @@ void main()
     std::cout << out << "\n";
 */
 
-    Layer* layer0 = new DenseLayer(3, Activation::NONE); // Input layer
-    nn.pushLayer(layer0);
+    //Layer* layer0 = new DenseLayer(3, Activation::NONE); // Input layer
+    //nn.pushLayer(layer0);
 
-    Layer* layer1 = new DenseLayer(5, Activation::SIGMOID);
+    Layer* layer1 = new DenseLayer(5, Activation::SIGMOID, 3);
     nn.pushLayer(layer1);
 
     Layer* layer2 = new DenseLayer(4, Activation::SIGMOID);
