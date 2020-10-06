@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\CudaEngine\CuUtills.cuh" />
+    <ClInclude Include="src\CudaEngine\Layers\CuConvLayer.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuDenseLayer.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuLayer.cuh" />
     <ClInclude Include="src\NN\Layer\ConvLayer.cuh" />

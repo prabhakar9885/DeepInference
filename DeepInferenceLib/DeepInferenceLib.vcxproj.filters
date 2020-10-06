@@ -27,6 +27,7 @@
     <ClInclude Include="src\CudaEngine\Layers\CuDenseLayer.cuh" />
     <ClInclude Include="src\Shared\DataStructs.cuh" />
     <ClInclude Include="src\CudaEngine\CuUtills.cuh" />
+    <ClInclude Include="src\CudaEngine\Layers\CuConvLayer.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\Shared\Utills.cu" />
