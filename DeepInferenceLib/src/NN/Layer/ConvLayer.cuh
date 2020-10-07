@@ -18,9 +18,10 @@ private:
 public:
     ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation);
     ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ConvInputLayerDims&& convInputLayerDims);
+    ~ConvLayer();
+    void init(const std::vector<float>& weight, const std::vector<float>& bias) override;
     bool canBeStackedOn(const Layer* prevLayer) const;
     bool hasInputLayer() const override;
-    void init(const std::vector<float> &weight, const std::vector<float> &bias) override;
     float* forward(const float* input) const override;
     ConvLayerDims getSize() const;
     void* getOutput() const override;

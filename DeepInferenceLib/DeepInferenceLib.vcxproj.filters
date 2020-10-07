@@ -38,5 +38,6 @@
     <CudaCompile Include="src\CudaEngine\Layers\CuLayer.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuDenseLayer.cu" />
     <CudaCompile Include="src\CudaEngine\CuUtills.cu" />
+    <CudaCompile Include="src\CudaEngine\Layers\CuConvLayer.cu" />
   </ItemGroup>
 </Project>
