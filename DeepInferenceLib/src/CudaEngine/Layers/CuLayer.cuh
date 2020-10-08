@@ -13,5 +13,5 @@ public:
     bool hasInputLayer();
     virtual float* compute(const float* x) = 0;
     virtual void releaseMem() = 0;
-    virtual std::vector<int> &getOutput() const = 0;
+    virtual std::vector<float>&& getOutput() const = 0;
 };

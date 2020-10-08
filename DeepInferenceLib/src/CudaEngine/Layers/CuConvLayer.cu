@@ -2,6 +2,19 @@
 
 cudnnHandle_t CuConvLayer::handle;
 
+/// @brief Use this for Creating Conv input-layer 
+/// @param inputChannelCount 
+/// @param outputChannelCount 
+/// @param widthOfChannels 
+/// @param heightOfChannels 
+/// @param padding 
+/// @param stride 
+/// @param dilation 
+/// @param inputImageBatchSize 
+/// @param inputImageChannels 
+/// @param inputImageHeight 
+/// @param inputImageWidth 
+/// @param activation 
 CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widthOfChannels, int heightOfChannels, 
     int padding, int stride, int dilation,
     int inputImageBatchSize, int inputImageChannels, int inputImageHeight, int inputImageWidth, Activation activation)
@@ -79,6 +92,16 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
     this->activation = activation;
 }
 
+/// @brief Use if for creating hidden Conv input-layers
+/// @param inputChannelCount 
+/// @param outputChannelCount 
+/// @param widthOfChannels 
+/// @param heightOfChannels 
+/// @param padding 
+/// @param stride 
+/// @param dilation 
+/// @param prevLayer 
+/// @param activation 
 CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widthOfChannels, int heightOfChannels,
     int padding, int stride, int dilation, 
     CuConvLayer* prevLayer, Activation activation)
@@ -93,6 +116,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
         /*in_channels=*/inputChannelCount,
         /*kernel_height=*/heightOfChannels,
         /*kernel_width=*/widthOfChannels));
+    checkCUDA(cudaMalloc(&(this->cuKernel.onDevice), this->cuKernel.sizeInBytes));
 
     checkCUDNN(cudnnCreateConvolutionDescriptor(this->cuConvolution.descriptor));
     checkCUDNN(cudnnSetConvolution2dDescriptor(*this->cuConvolution.descriptor,
@@ -122,8 +146,8 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
         /*image_height=*/cuOut.height,
         /*image_width=*/cuOut.width));
     cuOut.sizeInBytes = sizeof(float) * cuOut.batchSize * cuOut.channelCount * cuOut.height * cuOut.width;
-    cudaMalloc(&(cuOut.onDevice), cuOut.sizeInBytes);
-    cudaMemset(cuOut.onDevice, 0, cuOut.sizeInBytes);
+    checkCUDA(cudaMalloc(&(cuOut.onDevice), cuOut.sizeInBytes));
+    checkCUDA(cudaMemset(cuOut.onDevice, 0, cuOut.sizeInBytes));
 
     checkCUDNN(cudnnGetConvolutionForwardAlgorithm(CuConvLayer::handle,
         *this->cuInput.descriptor,
@@ -141,7 +165,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
         *this->cuOutput.descriptor,
         *this->cuConvolution.algo,
         &(this->cuWorkspace.sizeInBytes)));
-    cudaMalloc(&this->cuWorkspace.onDevice, this->cuWorkspace.sizeInBytes);
+    checkCUDA(cudaMalloc(&this->cuWorkspace.onDevice, this->cuWorkspace.sizeInBytes));
 
     this->activation = activation;
 }
@@ -149,3 +173,44 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
 CuConvLayer::~CuConvLayer()
 {
 }
+
+/// @brief 
+/// @param weights are in NCHW order
+/// @param numberOfWeights 
+/// @param bias it's not supported
+/// @param numberOfBias it's not supported
+void CuConvLayer::init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias)
+{
+    CuKernel& cuKernel = this->cuKernel;
+    if (numberOfWeights * sizeof(float) != cuKernel.sizeInBytes)
+        throw "Number of weights received doesn't fit the expectation.";
+    checkCUDA(cudaMemcpy(cuKernel.onDevice, weights, cuKernel.sizeInBytes, cudaMemcpyHostToDevice));
+    cudaDeviceSynchronize();
+}
+
+float* CuConvLayer::compute(const float* x)
+{
+    const float alpha = 1.0f, beta = 0.0f;
+
+    checkCUDNN(cudnnConvolutionForward(CuConvLayer::handle,
+        &alpha,
+        *this->cuInput.descriptor,
+        this->cuInput.dataOnDevice,
+        *this->cuKernel.descriptor,
+        this->cuKernel.onDevice,
+        *this->cuConvolution.descriptor,
+        *this->cuConvolution.algo,
+        this->cuWorkspace.onDevice,
+        this->cuWorkspace.sizeInBytes,
+        &beta,
+        *this->cuOutput.descriptor,
+        this->cuOutput.onDevice));
+    cudaDeviceSynchronize();
+}
+
+std::vector<float>&& CuConvLayer::getOutput() const
+{
+    const Tensor4D& output = this->cuOutput;
+    return std::vector<float>(output.onDevice, output.onDevice + output.sizeInBytes / sizeof(float));
+}
+

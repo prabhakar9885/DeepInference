@@ -101,12 +101,8 @@ void CuDenseLayer::releaseMem()
     cudaFree(this->bDevice);
 }
 
-std::vector<int>& CuDenseLayer::getOutput() const
+std::vector<float>&& CuDenseLayer::getOutput() const
 {
-    for (int i = 0; i < this->sizeOfCurrentLayer; i++)
-    {
-        //std::cout << this->bDevice[i] << "\n";
-    }
-    return std::vector<int>();
+    return std::vector<float>(this->bDevice, this->bDevice + this->sizeOfCurrentLayer);
 }
 

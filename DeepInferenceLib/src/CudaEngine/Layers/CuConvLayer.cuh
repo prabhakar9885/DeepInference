@@ -19,6 +19,17 @@
     }                                                        \
   }
 
+
+#define checkCUDA(expression)                               \
+  {                                                          \
+    cudaError_t status = (expression);                     \
+    if (status != cudaSuccess) {                    \
+      std::cerr << "Error on line " << __LINE__ << ": "      \
+                << cudaGetErrorString(status) << std::endl; \
+      std::exit(EXIT_FAILURE);                               \
+    }                                                        \
+  }
+
 class CuConvLayer : public CuLayer
 {
 private:
@@ -40,7 +51,7 @@ public:
     ~CuConvLayer();
     void init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias) override; /*weights is in RMO*/
     float* compute(const float* x);
-    std::vector<int>& getOutput() const;
+    std::vector<float>&& getOutput() const override;
 };
 
 

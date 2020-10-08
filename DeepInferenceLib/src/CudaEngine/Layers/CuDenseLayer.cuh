@@ -27,6 +27,6 @@ public:
     void init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias) override; /*weights is in RMO*/
     float* compute(const float* x);
     void releaseMem();
-    std::vector<int>& getOutput() const;
+    std::vector<float>&& getOutput() const override;
 };
 
