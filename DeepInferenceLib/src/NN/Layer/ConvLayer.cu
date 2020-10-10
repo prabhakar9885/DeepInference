@@ -41,7 +41,8 @@ void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> 
     if (prevLayer)
     {
         prevLayerDims = prevLayer->convLayerDims;
-        this->cuConvLayer = new CuConvLayer(this->convLayerDims.C, this->convLayerDims.N, this->convLayerDims.W, this->convLayerDims.H, this->activation, prevLayer->cuConvLayer);
+        this->cuConvLayer = new CuConvLayer(this->convLayerDims.C, this->convLayerDims.N, this->convLayerDims.W, this->convLayerDims.H,
+            0, 1, 0, prevLayer->getCuLayer(), this->activation);
     }
     else
     {
@@ -51,12 +52,11 @@ void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> 
                             this->convInputLayerDims.imageHeight,
                             this->convInputLayerDims.imageWidth
                         };
-        this->cuConvLayer = new CuConvLayer(this->convLayerDims.C, this->convLayerDims.N, this->convLayerDims.W, this->convLayerDims.H, this->activation);
+        this->cuConvLayer = new CuConvLayer(this->convLayerDims.C, this->convLayerDims.N, this->convLayerDims.W, this->convLayerDims.H,
+            0, 1, 0, prevLayerDims.N, prevLayerDims.C, prevLayerDims.H, prevLayerDims.W, this->activation);
     }
     if (prevLayer && this->convLayerDims.N * this->convLayerDims.C * this->convLayerDims.H * this->convLayerDims.W != weight.size())
         throw "WeightDimensionsInvalid: ";
-    this->cuConvLayer->setSizeOfInput(prevLayerDims.N, prevLayerDims.C, prevLayerDims.H, prevLayerDims.W);
-    this->cuConvLayer->allocMemForLayer();
     this->cuConvLayer->init(weight.data(), weight.size(), bias.data(), bias.size());
 }
 
@@ -68,6 +68,11 @@ float* ConvLayer::forward(const float* input) const
 ConvLayerDims ConvLayer::getSize() const
 {
     return this->convLayerDims;
+}
+
+const CuConvLayer* ConvLayer::getCuLayer() const
+{
+    return this->cuConvLayer;
 }
 
 void* ConvLayer::getOutput() const

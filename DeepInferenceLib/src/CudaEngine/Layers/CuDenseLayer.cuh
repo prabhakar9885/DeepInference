@@ -20,7 +20,7 @@ public:
     static cublasHandle_t handle;
 
     CuDenseLayer(int sizeOfCurrentLayer, Activation activation);
-    CuDenseLayer(int sizeOfCurrentLayer, Activation activation, CuLayer* prevLayer);
+    CuDenseLayer(int sizeOfCurrentLayer, Activation activation, const CuLayer* prevLayer);
     ~CuDenseLayer();
     void setSizeOfInput(int sizeOfInput);
     void allocMemForLayer();

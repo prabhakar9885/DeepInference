@@ -104,7 +104,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
 /// @param activation 
 CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widthOfChannels, int heightOfChannels,
     int padding, int stride, int dilation, 
-    CuConvLayer* prevLayer, Activation activation)
+    const CuConvLayer* prevLayer, Activation activation)
 {
     this->cuInput = std::move(prevLayer->cuOutput);
 
@@ -206,6 +206,11 @@ float* CuConvLayer::compute(const float* x)
         *this->cuOutput.descriptor,
         this->cuOutput.onDevice));
     cudaDeviceSynchronize();
+}
+
+const Tensor4D& CuConvLayer::getOutputOnDevice() const
+{
+    return this->cuOutput;
 }
 
 std::vector<float>&& CuConvLayer::getOutput() const

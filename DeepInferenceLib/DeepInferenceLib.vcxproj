@@ -85,6 +85,7 @@
     <ClInclude Include="src\CudaEngine\CuUtills.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuConvLayer.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuDenseLayer.cuh" />
+    <ClInclude Include="src\CudaEngine\Layers\CuFlattenedLayer.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuLayer.cuh" />
     <ClInclude Include="src\NN\Layer\ConvLayer.cuh" />
     <ClInclude Include="src\NN\Layer\DenseLayer.cuh" />
@@ -102,6 +103,7 @@
     <CudaCompile Include="src\CudaEngine\CuUtills.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuConvLayer.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuDenseLayer.cu" />
+    <CudaCompile Include="src\CudaEngine\Layers\CuFlattenedLayer.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuLayer.cu" />
     <CudaCompile Include="src\NN\Layer\ConvLayer.cu" />
     <CudaCompile Include="src\NN\Layer\DenseLayer.cu" />

@@ -9,7 +9,7 @@ CuDenseLayer::CuDenseLayer(int sizeOfCurrentLayer, Activation activation) : size
     this->isInputLayer = true;
 }
 
-CuDenseLayer::CuDenseLayer(int sizeOfCurrentLayer, Activation activation, CuLayer* prevLayer) : sizeOfCurrentLayer{ sizeOfCurrentLayer }, activation{ activation }
+CuDenseLayer::CuDenseLayer(int sizeOfCurrentLayer, Activation activation, const CuLayer* prevLayer) : sizeOfCurrentLayer{ sizeOfCurrentLayer }, activation{ activation }
 {
     this->prevLayer = prevLayer;
 }

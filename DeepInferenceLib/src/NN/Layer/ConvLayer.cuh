@@ -24,6 +24,7 @@ public:
     bool hasInputLayer() const override;
     float* forward(const float* input) const override;
     ConvLayerDims getSize() const;
+    const CuConvLayer* getCuLayer() const;
     void* getOutput() const override;
 };
 

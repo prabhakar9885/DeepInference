@@ -44,13 +44,14 @@ public:
     static cudnnHandle_t handle;
 
     CuConvLayer(int inputChannelCount, int outputChannelCount, int widthOfChannels, int heightOfChannels,
-        int padding, int stride, int dilation, CuConvLayer* prevLayer, Activation activation);
+        int padding, int stride, int dilation, const CuConvLayer* prevLayer, Activation activation);
     CuConvLayer(int inputChannelCount, int outputChannelCount, int widthOfChannels, int heightOfChannels, 
         int padding, int stride, int dilation,
         int inputImageBatchSize, int inputImageChannels, int inputImageHeight, int inputImageWidth, Activation activation);
     ~CuConvLayer();
     void init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias) override; /*weights is in RMO*/
     float* compute(const float* x);
+    const Tensor4D& getOutputOnDevice() const;
     std::vector<float>&& getOutput() const override;
 };
 

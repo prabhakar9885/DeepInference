@@ -55,11 +55,19 @@ void NN::init(const std::vector<std::vector<float>>& weightsAndBias) const
     while (layerIterator != layers.end() && weightsAndBiasIterator != weightsAndBias.end())
     {
         Layer* currentLayer = *layerIterator;
-        const std::vector<float>& weight = *weightsAndBiasIterator;
-        const std::vector<float>& bias = *(weightsAndBiasIterator + 1);
-        currentLayer->init(weight, bias);
-        weightsAndBiasIterator += 2;
-        layerIterator++;
+        if (Utills::Layers::getLayerType(currentLayer) == LayerType::FLATTEN)
+        {
+            Flatten* flattened = dynamic_cast<Flatten*>(currentLayer);
+            currentLayer->init();
+        }
+        else
+        {
+            const std::vector<float>& weight = *weightsAndBiasIterator;
+            const std::vector<float>& bias = *(weightsAndBiasIterator + 1);
+            currentLayer->init(weight, bias);
+            weightsAndBiasIterator += 2;
+            layerIterator++;
+        }
     }
 }
 

@@ -28,6 +28,7 @@
     <ClInclude Include="src\Shared\DataStructs.cuh" />
     <ClInclude Include="src\CudaEngine\CuUtills.cuh" />
     <ClInclude Include="src\CudaEngine\Layers\CuConvLayer.cuh" />
+    <ClInclude Include="src\CudaEngine\Layers\CuFlattenedLayer.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\Shared\Utills.cu" />
@@ -39,5 +40,6 @@
     <CudaCompile Include="src\CudaEngine\Layers\CuDenseLayer.cu" />
     <CudaCompile Include="src\CudaEngine\CuUtills.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuConvLayer.cu" />
+    <CudaCompile Include="src\CudaEngine\Layers\CuFlattenedLayer.cu" />
   </ItemGroup>
 </Project>
