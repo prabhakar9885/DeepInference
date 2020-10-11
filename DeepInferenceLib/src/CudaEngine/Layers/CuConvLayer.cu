@@ -20,8 +20,11 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heig
     int inputImageBatchSize, int inputImageChannels, int inputImageHeight, int inputImageWidth, Activation activation)
 {
     this->isInputLayer = true;
-    checkCUDNN(cudnnCreateTensorDescriptor(this->cuInput.descriptor));
-    checkCUDNN(cudnnSetTensor4dDescriptor(*this->cuInput.descriptor,
+    cudaSetDevice(0);
+    checkCUDNN(cudnnCreate(&CuConvLayer::handle));
+
+    checkCUDNN(cudnnCreateTensorDescriptor(&this->cuInput.descriptor));
+    checkCUDNN(cudnnSetTensor4dDescriptor(this->cuInput.descriptor,
         /*format=*/CUDNN_TENSOR_NHWC,
         /*dataType=*/CUDNN_DATA_FLOAT,
         /*batch_size=*/inputImageBatchSize,
@@ -31,17 +34,19 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heig
     this->cuInput.sizeInBytes = sizeof(float) * inputImageBatchSize * inputImageChannels * inputImageHeight * inputImageWidth;
     cudaMalloc(&(this->cuInput.onDevice), this->cuInput.sizeInBytes);
 
-    checkCUDNN(cudnnCreateFilterDescriptor(this->cuKernel.descriptor));
-    checkCUDNN(cudnnSetFilter4dDescriptor(*this->cuKernel.descriptor,
+    checkCUDNN(cudnnCreateFilterDescriptor(&this->cuKernel.descriptor));
+    checkCUDNN(cudnnSetFilter4dDescriptor(this->cuKernel.descriptor,
         /*dataType=*/CUDNN_DATA_FLOAT,
         /*format=*/CUDNN_TENSOR_NCHW,
-        /*out_channels=*/outputChannelCount,
-        /*in_channels=*/inputChannelCount,
-        /*kernel_height=*/heightOfChannels,
-        /*kernel_width=*/widthOfChannels));
+        /*out_channels=*/ (this->cuKernel.outChannels = outputChannelCount),
+        /*in_channels=*/ (this->cuKernel.inChannels = inputChannelCount),
+        /*kernel_height=*/ (this->cuKernel.heightOfChannel = heightOfChannels),
+        /*kernel_width=*/ (this->cuKernel.widthOfChannel = widthOfChannels)));
+    this->cuKernel.sizeInBytes = sizeof(float) * outputChannelCount * inputChannelCount * heightOfChannels * widthOfChannels;
+    cudaMalloc(&(this->cuKernel.onDevice), this->cuKernel.sizeInBytes);
 
-    checkCUDNN(cudnnCreateConvolutionDescriptor(this->cuConvolution.descriptor));
-    checkCUDNN(cudnnSetConvolution2dDescriptor(*this->cuConvolution.descriptor,
+    checkCUDNN(cudnnCreateConvolutionDescriptor(&this->cuConvolution.descriptor));
+    checkCUDNN(cudnnSetConvolution2dDescriptor(this->cuConvolution.descriptor,
         /*pad_height=*/padding,
         /*pad_width=*/padding,
         /*vertical_stride=*/stride,
@@ -50,17 +55,17 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heig
         /*dilation_width=*/dilation,
         /*mode=*/CUDNN_CROSS_CORRELATION,
         /*computeType=*/CUDNN_DATA_FLOAT));
-    checkCUDNN(cudnnGetConvolution2dForwardOutputDim(*this->cuConvolution.descriptor,
-        *this->cuInput.descriptor,
-        *this->cuKernel.descriptor,
+    checkCUDNN(cudnnGetConvolution2dForwardOutputDim(this->cuConvolution.descriptor,
+        this->cuInput.descriptor,
+        this->cuKernel.descriptor,
         &(this->cuOutput.batchSize),
         &(this->cuOutput.channelCount),
         &(this->cuOutput.height),
         &(this->cuOutput.width)));
 
     Tensor4D& cuOut = this->cuOutput;
-    checkCUDNN(cudnnCreateTensorDescriptor(cuOut.descriptor));
-    checkCUDNN(cudnnSetTensor4dDescriptor(*cuOut.descriptor,
+    checkCUDNN(cudnnCreateTensorDescriptor(&cuOut.descriptor));
+    checkCUDNN(cudnnSetTensor4dDescriptor(cuOut.descriptor,
         /*format=*/CUDNN_TENSOR_NHWC,
         /*dataType=*/CUDNN_DATA_FLOAT,
         /*batch_size=*/cuOut.batchSize,
@@ -72,20 +77,20 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heig
     cudaMemset(cuOut.onDevice, 0, cuOut.sizeInBytes);
 
     checkCUDNN(cudnnGetConvolutionForwardAlgorithm(CuConvLayer::handle,
-        *this->cuInput.descriptor,
-        *this->cuKernel.descriptor,
-        *this->cuConvolution.descriptor,
-        *this->cuOutput.descriptor,
+        this->cuInput.descriptor,
+        this->cuKernel.descriptor,
+        this->cuConvolution.descriptor,
+        this->cuOutput.descriptor,
         CUDNN_CONVOLUTION_FWD_PREFER_FASTEST,
         /*memoryLimitInBytes=*/0,
-        this->cuConvolution.algo));
+        &this->cuConvolution.algo));
 
     checkCUDNN(cudnnGetConvolutionForwardWorkspaceSize(CuConvLayer::handle,
-        *this->cuInput.descriptor,
-        *this->cuKernel.descriptor,
-        *this->cuConvolution.descriptor,
-        *this->cuOutput.descriptor,
-        *this->cuConvolution.algo,
+        this->cuInput.descriptor,
+        this->cuKernel.descriptor,
+        this->cuConvolution.descriptor,
+        this->cuOutput.descriptor,
+        this->cuConvolution.algo,
         &(this->cuWorkspace.sizeInBytes)));
     cudaMalloc(&this->cuWorkspace.onDevice, this->cuWorkspace.sizeInBytes);
 
@@ -108,18 +113,19 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
 {
     this->cuInput = std::move(prevLayer->cuOutput);
 
-    checkCUDNN(cudnnCreateFilterDescriptor(this->cuKernel.descriptor));
-    checkCUDNN(cudnnSetFilter4dDescriptor(*this->cuKernel.descriptor,
+    checkCUDNN(cudnnCreateFilterDescriptor(&this->cuKernel.descriptor));
+    checkCUDNN(cudnnSetFilter4dDescriptor(this->cuKernel.descriptor,
         /*dataType=*/CUDNN_DATA_FLOAT,
         /*format=*/CUDNN_TENSOR_NCHW,
-        /*out_channels=*/outputChannelCount,
-        /*in_channels=*/inputChannelCount,
-        /*kernel_height=*/heightOfChannels,
-        /*kernel_width=*/widthOfChannels));
+        /*out_channels=*/ (this->cuKernel.outChannels = outputChannelCount),
+        /*in_channels=*/ (this->cuKernel.inChannels = inputChannelCount),
+        /*kernel_height=*/ (this->cuKernel.heightOfChannel = heightOfChannels),
+        /*kernel_width=*/ (this->cuKernel.widthOfChannel = widthOfChannels)));
+    this->cuKernel.sizeInBytes = sizeof(float) * outputChannelCount * inputChannelCount * heightOfChannels * widthOfChannels;
     checkCUDA(cudaMalloc(&(this->cuKernel.onDevice), this->cuKernel.sizeInBytes));
 
-    checkCUDNN(cudnnCreateConvolutionDescriptor(this->cuConvolution.descriptor));
-    checkCUDNN(cudnnSetConvolution2dDescriptor(*this->cuConvolution.descriptor,
+    checkCUDNN(cudnnCreateConvolutionDescriptor(&this->cuConvolution.descriptor));
+    checkCUDNN(cudnnSetConvolution2dDescriptor(this->cuConvolution.descriptor,
         /*pad_height=*/padding,
         /*pad_width=*/padding,
         /*vertical_stride=*/stride,
@@ -128,17 +134,17 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
         /*dilation_width=*/dilation,
         /*mode=*/CUDNN_CROSS_CORRELATION,
         /*computeType=*/CUDNN_DATA_FLOAT));
-    checkCUDNN(cudnnGetConvolution2dForwardOutputDim(*this->cuConvolution.descriptor,
-        *this->cuInput.descriptor,
-        *this->cuKernel.descriptor,
+    checkCUDNN(cudnnGetConvolution2dForwardOutputDim(this->cuConvolution.descriptor,
+        this->cuInput.descriptor,
+        this->cuKernel.descriptor,
         &(this->cuOutput.batchSize),
         &(this->cuOutput.channelCount),
         &(this->cuOutput.height),
         &(this->cuOutput.width)));
 
     Tensor4D& cuOut = this->cuOutput;
-    checkCUDNN(cudnnCreateTensorDescriptor(cuOut.descriptor));
-    checkCUDNN(cudnnSetTensor4dDescriptor(*cuOut.descriptor,
+    checkCUDNN(cudnnCreateTensorDescriptor(&cuOut.descriptor));
+    checkCUDNN(cudnnSetTensor4dDescriptor(cuOut.descriptor,
         /*format=*/CUDNN_TENSOR_NHWC,
         /*dataType=*/CUDNN_DATA_FLOAT,
         /*batch_size=*/cuOut.batchSize,
@@ -150,20 +156,20 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
     checkCUDA(cudaMemset(cuOut.onDevice, 0, cuOut.sizeInBytes));
 
     checkCUDNN(cudnnGetConvolutionForwardAlgorithm(CuConvLayer::handle,
-        *this->cuInput.descriptor,
-        *this->cuKernel.descriptor,
-        *this->cuConvolution.descriptor,
-        *this->cuOutput.descriptor,
+        this->cuInput.descriptor,
+        this->cuKernel.descriptor,
+        this->cuConvolution.descriptor,
+        this->cuOutput.descriptor,
         CUDNN_CONVOLUTION_FWD_PREFER_FASTEST,
         /*memoryLimitInBytes=*/0,
-        this->cuConvolution.algo));
+        &this->cuConvolution.algo));
 
     checkCUDNN(cudnnGetConvolutionForwardWorkspaceSize(CuConvLayer::handle,
-        *this->cuInput.descriptor,
-        *this->cuKernel.descriptor,
-        *this->cuConvolution.descriptor,
-        *this->cuOutput.descriptor,
-        *this->cuConvolution.algo,
+        this->cuInput.descriptor,
+        this->cuKernel.descriptor,
+        this->cuConvolution.descriptor,
+        this->cuOutput.descriptor,
+        this->cuConvolution.algo,
         &(this->cuWorkspace.sizeInBytes)));
     checkCUDA(cudaMalloc(&this->cuWorkspace.onDevice, this->cuWorkspace.sizeInBytes));
 
@@ -194,16 +200,16 @@ float* CuConvLayer::compute(const float* x)
 
     checkCUDNN(cudnnConvolutionForward(CuConvLayer::handle,
         &alpha,
-        *this->cuInput.descriptor,
+        this->cuInput.descriptor,
         this->cuInput.dataOnDevice,
-        *this->cuKernel.descriptor,
+        this->cuKernel.descriptor,
         this->cuKernel.onDevice,
-        *this->cuConvolution.descriptor,
-        *this->cuConvolution.algo,
+        this->cuConvolution.descriptor,
+        this->cuConvolution.algo,
         this->cuWorkspace.onDevice,
         this->cuWorkspace.sizeInBytes,
         &beta,
-        *this->cuOutput.descriptor,
+        this->cuOutput.descriptor,
         this->cuOutput.onDevice));
     cudaDeviceSynchronize();
 }

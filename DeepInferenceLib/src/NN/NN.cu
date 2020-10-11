@@ -66,8 +66,8 @@ void NN::init(const std::vector<std::vector<float>>& weightsAndBias) const
             const std::vector<float>& bias = *(weightsAndBiasIterator + 1);
             currentLayer->init(weight, bias);
             weightsAndBiasIterator += 2;
-            layerIterator++;
         }
+        layerIterator++;
     }
 }
 

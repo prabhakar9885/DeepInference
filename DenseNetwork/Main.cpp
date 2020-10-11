@@ -10,59 +10,104 @@ void main()
     std::vector<std::vector<float>> weight_bias;
 
     // Input image spec: 16 x 16 x 3 (RGB)
-    // 5 Kernals of size (H,W,C) = (3, 3, 3)    => output: (14, 14, 5)
-    Layer* conv1 = new ConvLayer(3, 5, 3, 3, 1, 0, 0, Activation::ReLU, ConvInputLayerDims{ 1,3,16,16 });
+    // Conv1(N, C, H, W) = (3, 3, 5, 5)    => output(C, H, W): (3, 12, 12)
+    Layer* conv1 = new ConvLayer(3, 3, 5, 5, 1, 0, 1, Activation::ReLU, ConvInputLayerDims{ 1,3,16,16 });
     nn.pushLayer(conv1);
     {
-        std::vector<float>&& wt_5_3_3 = std::initializer_list<float>({
-            // Kernel-0
+        std::vector<float>&& wt_3_5_5 = std::initializer_list<float>({
+            // Kernel-00
+            1, 1, 0, 1, 1,
+            1, 1, 0, 1, 1,
+            1, 1, 0, 1, 1,
+            1, 1, 0, 1, 1,
+            1, 1, 0, 1, 1,
+            // Kernel-01
+            1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1,
+            0, 0, 0, 0, 0,
+            1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1,
+            // Kernel-02
+            1, 1, 0, 1, 1,
+            1, 1, 0, 1, 1,
+            0, 0, 0, 0, 0,
+            1, 1, 0, 1, 1,
+            1, 1, 0, 1, 1,
+            // Kernel-10
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            // Kernel-11
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            1, 1, 1, 1, 1,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            // Kernel-12
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            1, 1, 1, 1, 1,
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            // Kernel-20
+            1, 0, 0, 0, 1,
+            0, 1, 0, 1, 0,
+            0, 0, 1, 0, 0,
+            0, 1, 0, 1, 0,
+            1, 0, 0, 0, 1,
+            // Kernel-21
+            -1,  0,  0,  0, -1,
+             0, -1,  0, -1,  0,
+             0,  0, -1,  0,  0,
+             0, -1,  0, -1,  0,
+            -1,  0,  0,  0, -1,
+            // Kernel-22
+             0,  0, -1,  0,  0,
+             0,  0, -1,  0,  0,
+            -1, -1, -1, -1, -1,
+             0,  0, -1,  0,  0,
+             0,  0, -1,  0,  0,
+            });
+        std::vector<float> bias_3(3, 0);
+        weight_bias.push_back(std::move(wt_3_5_5));
+        weight_bias.push_back(std::move(bias_3));
+    }
+
+    // Conv2(N, C, H, W) = (2, 3, 3, 3)    => output(C, H, W): (2, 10, 10)
+    Layer* conv2 = new ConvLayer(3, 2, 3, 3, 1, 0, 1, Activation::ReLU);
+    nn.pushLayer(conv2);
+    {
+        std::vector<float>&& wt_1_3_3 = std::initializer_list<float>({
+            // Kernel-00
             1, 0, 1,
             1, 0, 1,
             1, 0, 1,
-            // Kernel-1
+            // Kernel-01
             0, 1, 0,
             0, 1, 0,
             0, 1, 0,
-            // Kernel-2
-            1, 1, 1,
-            0, 0, 0,
-            1, 1, 1,
-            // Kernel-3
-            0, 0, 0,
-            1, 1, 1,
-            0, 0, 0,
-            // Kernel-4
+            // Kernel-02
+            1, 0, 1,
+            0, 1, 0,
+            1, 0, 1,
+            // Kernel-10
+            1, 0, 1,
+            1, 0, 1,
+            1, 0, 1,
+            // Kernel-11
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
+            // Kernel-12
             1, 0, 1,
             0, 1, 0,
             1, 0, 1
             });
-        std::vector<float> bias_5(5, 0);
-        weight_bias.push_back(std::move(wt_5_3_3));
-        weight_bias.push_back(std::move(bias_5));
-    }
-
-    // 3 Kernals of size (H,W,C) = (3, 5, 5)    => output: (10, 10, 3)
-    Layer* conv3 = new ConvLayer(5, 3, 3, 3, 1, 0, 0, Activation::ReLU);
-    nn.pushLayer(conv3);
-    {
-        std::vector<float>&& wt_3_3_3 = std::initializer_list<float>({
-            // Kernel-0
-            1, 0, 1,
-            1, 0, 1,
-            1, 0, 1,
-            // Kernel-1
-            0, 1, 0,
-            0, 1, 0,
-            0, 1, 0,
-            // Kernel-2
-            1, 1, 1,
-            0, 0, 0,
-            1, 1, 1,
-            // Kernel-3
-            });
-        std::vector<float> bias_3(3, 0);
-        weight_bias.push_back(std::move(wt_3_3_3));
-        weight_bias.push_back(std::move(bias_3));
+        std::vector<float> bias_2(2, 0);
+        weight_bias.push_back(std::move(wt_1_3_3));
+        weight_bias.push_back(std::move(bias_2));
     }
 
     // Size of the flattened layer will be 3*H*W*C = 900

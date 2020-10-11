@@ -38,7 +38,7 @@ struct CuKernel
     int inChannels;         //  (C) Number of Input channels
     int heightOfChannel;    //  (H) Height of the channel
     int widthOfChannel;     //  (W) Width of the channel
-    cudnnFilterDescriptor_t* descriptor;
+    cudnnFilterDescriptor_t descriptor;
     float* onDevice;
     size_t sizeInBytes;
 };
@@ -52,8 +52,8 @@ struct CuWorkspace
 struct CuConvolution
 {
     int padding, stride, dilation;
-    cudnnConvolutionDescriptor_t* descriptor;
-    cudnnConvolutionFwdAlgo_t* algo;
+    cudnnConvolutionDescriptor_t descriptor;
+    cudnnConvolutionFwdAlgo_t algo;
 };
 
 struct Tensor4D
@@ -63,7 +63,7 @@ struct Tensor4D
     int height;             // (H) Height of output; In case of input-image, it's the height of the image
     int width;              // (W) Width of output; In case of input-image, it's the width of the image
     float* dataOnDevice;    // Image-data layed-out in NHWC format on device memory
-    cudnnTensorDescriptor_t* descriptor;
+    cudnnTensorDescriptor_t descriptor;
     float* onDevice;
     size_t sizeInBytes;
 };

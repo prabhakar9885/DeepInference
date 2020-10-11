@@ -45,7 +45,9 @@ void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> 
             this->convLayerDims.N,
             this->convLayerDims.H,
             this->convLayerDims.W,
-            0, 1, 0,
+            this->convAlgoSpecs.padding,
+            this->convAlgoSpecs.stride,
+            this->convAlgoSpecs.dilation,
             this->convInputLayerDims.batchSize,
             this->convInputLayerDims.channelsPerImage,
             this->convInputLayerDims.imageHeight,
@@ -55,7 +57,7 @@ void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> 
     }
     else
     {
-        if (this->convLayerDims.N * this->convLayerDims.C * this->convLayerDims.H * this->convLayerDims.W != weight.size())
+        if (weight.size() != this->convLayerDims.N * this->convLayerDims.C * this->convLayerDims.H * this->convLayerDims.W)
             throw "WeightDimensionsInvalid";
         ConvLayer* prevLayer = dynamic_cast<ConvLayer*>(this->prevLayer);
         this->cuConvLayer = new CuConvLayer(
@@ -63,7 +65,9 @@ void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> 
             this->convLayerDims.N,
             this->convLayerDims.W,
             this->convLayerDims.H,
-            0, 1, 0,
+            this->convAlgoSpecs.padding,
+            this->convAlgoSpecs.stride,
+            this->convAlgoSpecs.dilation,
             prevLayer->getCuLayer(),
             this->activation
         );
