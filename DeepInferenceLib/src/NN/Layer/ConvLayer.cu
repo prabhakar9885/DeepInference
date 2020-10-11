@@ -9,6 +9,8 @@ ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int stride, 
 
 ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ConvInputLayerDims&& convInputLayerDims) :ConvLayer(inChannels, outChannels, H, W, stride, padding, dilation, activation)
 {
+    if (convInputLayerDims.channelsPerImage != inChannels)
+        throw "NumberOfChannels in input must match the numberOfChannels in each kernel";
     this->convInputLayerDims = std::move(convInputLayerDims);
     this->inputSizeIsSet = true;
 }
@@ -37,26 +39,27 @@ bool ConvLayer::hasInputLayer() const
 void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> &bias)
 {
     ConvLayerDims prevLayerDims;
-    ConvLayer* prevLayer = dynamic_cast<ConvLayer*>(this->prevLayer);
-    if (prevLayer)
-    {
-        prevLayerDims = prevLayer->convLayerDims;
-        this->cuConvLayer = new CuConvLayer(this->convLayerDims.C, this->convLayerDims.N, this->convLayerDims.W, this->convLayerDims.H,
-            0, 1, 0, prevLayer->getCuLayer(), this->activation);
-    }
-    else
+    ConvLayer* prevLayer;
+    if (this->hasInputLayer())
     {
         prevLayerDims = ConvLayerDims{
                             this->convInputLayerDims.batchSize,
                             this->convInputLayerDims.channelsPerImage,
                             this->convInputLayerDims.imageHeight,
                             this->convInputLayerDims.imageWidth
-                        };
+        };
         this->cuConvLayer = new CuConvLayer(this->convLayerDims.C, this->convLayerDims.N, this->convLayerDims.W, this->convLayerDims.H,
             0, 1, 0, prevLayerDims.N, prevLayerDims.C, prevLayerDims.H, prevLayerDims.W, this->activation);
     }
-    if (prevLayer && this->convLayerDims.N * this->convLayerDims.C * this->convLayerDims.H * this->convLayerDims.W != weight.size())
-        throw "WeightDimensionsInvalid: ";
+    else
+    {
+        if (this->convLayerDims.N * this->convLayerDims.C * this->convLayerDims.H * this->convLayerDims.W != weight.size())
+            throw "WeightDimensionsInvalid";
+        prevLayer = dynamic_cast<ConvLayer*>(this->prevLayer);
+        prevLayerDims = prevLayer->convLayerDims;
+        this->cuConvLayer = new CuConvLayer(this->convLayerDims.C, this->convLayerDims.N, this->convLayerDims.W, this->convLayerDims.H,
+            0, 1, 0, prevLayer->getCuLayer(), this->activation);
+    }
     this->cuConvLayer->init(weight.data(), weight.size(), bias.data(), bias.size());
 }
 
