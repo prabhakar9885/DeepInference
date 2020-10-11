@@ -1,3 +1,6 @@
+#ifndef CUFLATTENEDLAYER_CUH
+#define CUFLATTENEDLAYER_CUH
+
 #include <cublas_v2.h>
 #include <cuda_runtime_api.h>
 #include <cuda_runtime.h>
@@ -22,3 +25,5 @@ public:
     std::vector<float>&& getOutput() const override;
 };
 
+
+#endif // !CUFLATTENEDLAYER_CUH

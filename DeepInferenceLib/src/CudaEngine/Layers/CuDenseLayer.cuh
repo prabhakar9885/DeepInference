@@ -1,3 +1,5 @@
+#ifndef CUDENSELAYER_CUH
+#define CUDENSELAYER_CUH
 
 #include <cublas_v2.h>
 #include <cuda_runtime_api.h>
@@ -20,7 +22,7 @@ public:
     static cublasHandle_t handle;
 
     CuDenseLayer(int sizeOfCurrentLayer, Activation activation);
-    CuDenseLayer(int sizeOfCurrentLayer, Activation activation, const CuLayer* prevLayer);
+    CuDenseLayer(int sizeOfCurrentLayer, Activation activation, CuLayer* prevLayer);
     ~CuDenseLayer();
     void setSizeOfInput(int sizeOfInput);
     void allocMemForLayer();
@@ -30,3 +32,5 @@ public:
     std::vector<float>&& getOutput() const override;
 };
 
+
+#endif // !CUDENSELAYER_CUH

@@ -16,7 +16,7 @@ void Flatten::init()
 {
     ConvLayer* prevLayer = dynamic_cast<ConvLayer*>(this->prevLayer);
     if (prevLayer)
-        this->cuFlattenedLayer = new CuFlattenedLayer(prevLayer->getPreviousCuLayer());
+        this->cuFlattenedLayer = new CuFlattenedLayer(prevLayer->getCuLayer());
     else
         throw "Previous Layer Should be a ConvLayer";
 }

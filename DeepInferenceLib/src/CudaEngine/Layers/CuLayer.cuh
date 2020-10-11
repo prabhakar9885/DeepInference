@@ -1,3 +1,6 @@
+#ifndef CULAYER_CUH
+#define CULAYER_CUH
+
 #include <algorithm>
 #include <vector>
 #include <iostream>
@@ -14,3 +17,5 @@ public:
     virtual float* compute(const float* x) = 0;
     virtual std::vector<float>&& getOutput() const = 0;
 };
+
+#endif // !CULAYER_CUH

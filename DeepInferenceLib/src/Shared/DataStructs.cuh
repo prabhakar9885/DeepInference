@@ -1,3 +1,7 @@
+#ifndef DATASTRUCTS_CUH
+#define DATASTRUCTS_CUH
+
+
 #include <cudnn.h>
 struct DenseLayerWeightDims {
     int currentLayerSize;
@@ -12,7 +16,7 @@ struct ConvInputLayerDims
     int imageWidth;         // W
 };
 
-struct ConvLayerDims 
+struct ConvLayerDims
 {
     int N;          //  Number of Output channels
     int C;          //  Number of Input channels
@@ -20,7 +24,7 @@ struct ConvLayerDims
     int W;          //  Width of the channel
 };
 
-struct ConvAlgoSpecs 
+struct ConvAlgoSpecs
 {
     int stride;
     int dilation;
@@ -63,3 +67,4 @@ struct Tensor4D
     float* onDevice;
     size_t sizeInBytes;
 };
+#endif // !DATASTRUCTS_CUH

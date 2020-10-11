@@ -58,7 +58,7 @@ void NN::init(const std::vector<std::vector<float>>& weightsAndBias) const
         if (Utills::Layers::getLayerType(currentLayer) == LayerType::FLATTEN)
         {
             Flatten* flattened = dynamic_cast<Flatten*>(currentLayer);
-            currentLayer->init();
+            flattened->init();
         }
         else
         {

@@ -43,9 +43,9 @@ private:
 public:
     static cudnnHandle_t handle;
 
-    CuConvLayer(int inputChannelCount, int outputChannelCount, int widthOfChannels, int heightOfChannels,
+    CuConvLayer(int inputChannelCount, int outputChannelCount, int heightOfChannels, int widthOfChannels,
         int padding, int stride, int dilation, const CuConvLayer* prevLayer, Activation activation);
-    CuConvLayer(int inputChannelCount, int outputChannelCount, int widthOfChannels, int heightOfChannels, 
+    CuConvLayer(int inputChannelCount, int outputChannelCount, int heightOfChannels, int widthOfChannels,
         int padding, int stride, int dilation,
         int inputImageBatchSize, int inputImageChannels, int inputImageHeight, int inputImageWidth, Activation activation);
     ~CuConvLayer();

@@ -15,7 +15,7 @@ cudnnHandle_t CuConvLayer::handle;
 /// @param inputImageHeight 
 /// @param inputImageWidth 
 /// @param activation 
-CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widthOfChannels, int heightOfChannels, 
+CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heightOfChannels, int widthOfChannels, 
     int padding, int stride, int dilation,
     int inputImageBatchSize, int inputImageChannels, int inputImageHeight, int inputImageWidth, Activation activation)
 {
