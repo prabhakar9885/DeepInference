@@ -1,6 +1,10 @@
 #ifndef CUCONVLAYER_CUH
 #define CUCONVLAYER_CUH
 
+#define DEBUG
+
+#include <iostream>
+#include <iomanip>
 #include <cudnn.h>
 #include <cuda_runtime_api.h>
 #include <cuda_runtime.h>
@@ -26,6 +30,7 @@
     if (status != cudaSuccess) {                    \
       std::cerr << "Error on line " << __LINE__ << ": "      \
                 << cudaGetErrorString(status) << std::endl; \
+      std::cerr << status << std::endl; \
       std::exit(EXIT_FAILURE);                               \
     }                                                        \
   }

@@ -16,7 +16,12 @@ void Flatten::init()
 {
     ConvLayer* prevLayer = dynamic_cast<ConvLayer*>(this->prevLayer);
     if (prevLayer)
+    {
         this->cuFlattenedLayer = new CuFlattenedLayer(prevLayer->getCuLayer());
+        ConvLayerDims& prevLayerDims = prevLayer->getSize();
+        this->size = prevLayerDims.N * prevLayerDims.C * prevLayerDims.H * prevLayerDims.W;
+        this->dataOnDevice = static_cast<float*>(prevLayer->getOutput());
+    }
     else
         throw "Previous Layer Should be a ConvLayer";
 }
@@ -44,6 +49,11 @@ const CuFlattenedLayer* Flatten::getCuLayer() const
 void* Flatten::getOutput() const
 {
 	return nullptr;
+}
+
+int Flatten::getSize() const
+{
+    return this->size;
 }
 
 #endif // !FLATTEN_CU

@@ -14,6 +14,7 @@ private:
     CuFlattenedLayer* cuFlattenedLayer = nullptr;
 public:
     Flatten();
+    int getSize() const;
     bool hasInputLayer() const;
     void init();
     void init(const std::vector<float>& weight, const std::vector<float>& bias) override;

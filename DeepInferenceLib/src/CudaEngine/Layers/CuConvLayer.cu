@@ -32,7 +32,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heig
         /*image_height=*/inputImageHeight,
         /*image_width=*/inputImageWidth));
     this->cuInput.sizeInBytes = sizeof(float) * inputImageBatchSize * inputImageChannels * inputImageHeight * inputImageWidth;
-    cudaMalloc(&(this->cuInput.onDevice), this->cuInput.sizeInBytes);
+    cudaMallocManaged(&(this->cuInput.onDevice), this->cuInput.sizeInBytes);
 
     checkCUDNN(cudnnCreateFilterDescriptor(&this->cuKernel.descriptor));
     checkCUDNN(cudnnSetFilter4dDescriptor(this->cuKernel.descriptor,
@@ -43,7 +43,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heig
         /*kernel_height=*/ (this->cuKernel.heightOfChannel = heightOfChannels),
         /*kernel_width=*/ (this->cuKernel.widthOfChannel = widthOfChannels)));
     this->cuKernel.sizeInBytes = sizeof(float) * outputChannelCount * inputChannelCount * heightOfChannels * widthOfChannels;
-    cudaMalloc(&(this->cuKernel.onDevice), this->cuKernel.sizeInBytes);
+    cudaMallocManaged(&(this->cuKernel.onDevice), this->cuKernel.sizeInBytes);
 
     checkCUDNN(cudnnCreateConvolutionDescriptor(&this->cuConvolution.descriptor));
     checkCUDNN(cudnnSetConvolution2dDescriptor(this->cuConvolution.descriptor,
@@ -73,7 +73,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heig
         /*image_height=*/cuOut.height,
         /*image_width=*/cuOut.width));
     cuOut.sizeInBytes = sizeof(float) * cuOut.batchSize * cuOut.channelCount * cuOut.height * cuOut.width;
-    cudaMalloc(&(cuOut.onDevice), cuOut.sizeInBytes);
+    cudaMallocManaged(&(cuOut.onDevice), cuOut.sizeInBytes);
     cudaMemset(cuOut.onDevice, 0, cuOut.sizeInBytes);
 
     checkCUDNN(cudnnGetConvolutionForwardAlgorithm(CuConvLayer::handle,
@@ -92,7 +92,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int heig
         this->cuOutput.descriptor,
         this->cuConvolution.algo,
         &(this->cuWorkspace.sizeInBytes)));
-    cudaMalloc(&this->cuWorkspace.onDevice, this->cuWorkspace.sizeInBytes);
+    cudaMallocManaged(&this->cuWorkspace.onDevice, this->cuWorkspace.sizeInBytes);
 
     this->activation = activation;
 }
@@ -122,7 +122,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
         /*kernel_height=*/ (this->cuKernel.heightOfChannel = heightOfChannels),
         /*kernel_width=*/ (this->cuKernel.widthOfChannel = widthOfChannels)));
     this->cuKernel.sizeInBytes = sizeof(float) * outputChannelCount * inputChannelCount * heightOfChannels * widthOfChannels;
-    checkCUDA(cudaMalloc(&(this->cuKernel.onDevice), this->cuKernel.sizeInBytes));
+    checkCUDA(cudaMallocManaged(&(this->cuKernel.onDevice), this->cuKernel.sizeInBytes));
 
     checkCUDNN(cudnnCreateConvolutionDescriptor(&this->cuConvolution.descriptor));
     checkCUDNN(cudnnSetConvolution2dDescriptor(this->cuConvolution.descriptor,
@@ -152,7 +152,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
         /*image_height=*/cuOut.height,
         /*image_width=*/cuOut.width));
     cuOut.sizeInBytes = sizeof(float) * cuOut.batchSize * cuOut.channelCount * cuOut.height * cuOut.width;
-    checkCUDA(cudaMalloc(&(cuOut.onDevice), cuOut.sizeInBytes));
+    checkCUDA(cudaMallocManaged(&(cuOut.onDevice), cuOut.sizeInBytes));
     checkCUDA(cudaMemset(cuOut.onDevice, 0, cuOut.sizeInBytes));
 
     checkCUDNN(cudnnGetConvolutionForwardAlgorithm(CuConvLayer::handle,
@@ -171,7 +171,7 @@ CuConvLayer::CuConvLayer(int inputChannelCount, int outputChannelCount, int widt
         this->cuOutput.descriptor,
         this->cuConvolution.algo,
         &(this->cuWorkspace.sizeInBytes)));
-    checkCUDA(cudaMalloc(&this->cuWorkspace.onDevice, this->cuWorkspace.sizeInBytes));
+    checkCUDA(cudaMallocManaged(&this->cuWorkspace.onDevice, this->cuWorkspace.sizeInBytes));
 
     this->activation = activation;
 }
@@ -198,10 +198,13 @@ float* CuConvLayer::compute(const float* x)
 {
     const float alpha = 1.0f, beta = 0.0f;
 
+    if(this->hasInputLayer())
+        checkCUDA(cudaMemcpy(cuInput.onDevice, x, cuInput.sizeInBytes, cudaMemcpyHostToDevice));
+
     checkCUDNN(cudnnConvolutionForward(CuConvLayer::handle,
         &alpha,
         this->cuInput.descriptor,
-        this->cuInput.dataOnDevice,
+        this->cuInput.onDevice,
         this->cuKernel.descriptor,
         this->cuKernel.onDevice,
         this->cuConvolution.descriptor,
@@ -212,6 +215,32 @@ float* CuConvLayer::compute(const float* x)
         this->cuOutput.descriptor,
         this->cuOutput.onDevice));
     cudaDeviceSynchronize();
+
+    #ifdef DEBUG
+        std::cout << "\n=x=x=x=x=x=x=x=x=x=x=x=x=x=x=";
+        int N = cuOutput.batchSize;
+        int C = cuOutput.channelCount;
+        int H = cuOutput.height;
+        int W = cuOutput.width;
+        float* data = new float[(long long)N * C * H * W];
+        checkCUDA(cudaMemcpy(data, cuOutput.onDevice, cuOutput.sizeInBytes, cudaMemcpyDeviceToHost));
+        int i = 0;
+        for (int n = 0; n < N; n++)
+        {
+            std::cout << "\nBatch: " << N;
+            for (int c = 0; c < C; c++)
+            {
+                std::cout << "\nChannel: " << c << " => \n";
+                for (int h = 0; h < H; h++)
+                {
+                    for (int w = 0; w < W; w++)
+                        std::cout << std::setw(6) << data[c + (w + (h + (n)*H) * W) * C] << "/" << data[i++];
+                    std::cout << "\n";
+                }
+            }
+        }
+        delete(data);
+    #endif // DEBUG
 }
 
 const Tensor4D& CuConvLayer::getOutputOnDevice() const

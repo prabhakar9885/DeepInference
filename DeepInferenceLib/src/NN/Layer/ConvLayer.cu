@@ -7,7 +7,8 @@ ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int stride, 
     this->activation = activation;
 }
 
-ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ConvInputLayerDims&& convInputLayerDims) :ConvLayer(inChannels, outChannels, H, W, stride, padding, dilation, activation)
+ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ConvInputLayerDims&& convInputLayerDims) :
+    ConvLayer(inChannels, outChannels, H, W, stride, padding, dilation, activation)
 {
     if (convInputLayerDims.channelsPerImage != inChannels)
         throw "NumberOfChannels in input must match the numberOfChannels in each kernel";
@@ -36,7 +37,7 @@ bool ConvLayer::hasInputLayer() const
     return this->inputSizeIsSet;
 }
 
-void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> &bias)
+void ConvLayer::init(const std::vector<float>& weight, const std::vector<float>& bias)
 {
     if (this->hasInputLayer())
     {
@@ -57,7 +58,8 @@ void ConvLayer::init(const std::vector<float> &weight, const std::vector<float> 
     }
     else
     {
-        if (weight.size() != this->convLayerDims.N * this->convLayerDims.C * this->convLayerDims.H * this->convLayerDims.W)
+        size_t numberOfWeightsReceived = (size_t)this->convLayerDims.N * this->convLayerDims.C * this->convLayerDims.H * this->convLayerDims.W;
+        if (weight.size() != numberOfWeightsReceived)
             throw "WeightDimensionsInvalid";
         ConvLayer* prevLayer = dynamic_cast<ConvLayer*>(this->prevLayer);
         this->cuConvLayer = new CuConvLayer(
@@ -92,5 +94,5 @@ const CuConvLayer* ConvLayer::getCuLayer() const
 
 void* ConvLayer::getOutput() const
 {
-    return nullptr;
+    return this->cuConvLayer->getOutputOnDevice().dataOnDevice;
 }

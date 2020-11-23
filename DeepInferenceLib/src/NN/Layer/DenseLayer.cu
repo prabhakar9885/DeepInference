@@ -23,11 +23,20 @@ DenseLayer::~DenseLayer()
 void DenseLayer::init(const std::vector<float>& weight, const std::vector<float>& bias)
 {
     int prevLayerSize;
-    DenseLayer* prevLayer = dynamic_cast<DenseLayer*>(this->prevLayer);
-    if (prevLayer)
+    LayerType typeOfPrevLayer = Utills::Layers::getLayerType(prevLayer);
+    if (typeOfPrevLayer == LayerType::DENSE)
     {
+        DenseLayer* prevLayer = dynamic_cast<DenseLayer*>(this->prevLayer);
         prevLayerSize = prevLayer->size;
         this->cuDenseLayer = new CuDenseLayer(this->size, this->activation, prevLayer->cuDenseLayer);
+    }
+    else if (typeOfPrevLayer == LayerType::FLATTEN)
+    {
+        Flatten* prevLayer = dynamic_cast<Flatten*>(this->prevLayer);
+        prevLayerSize = prevLayer->getSize();
+        this->inputSizeIsSet = true;
+        this->inputSize = prevLayerSize;
+        this->cuDenseLayer = new CuDenseLayer(this->size, this->activation, (CuLayer*)prevLayer);
     }
     else
     {
