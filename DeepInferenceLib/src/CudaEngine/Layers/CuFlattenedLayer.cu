@@ -6,7 +6,7 @@ CuFlattenedLayer::CuFlattenedLayer(const CuConvLayer* prevLayer)
     this->isInputLayer = false;
     const Tensor4D& prevLayerOut = prevLayer->getOutputOnDevice();
     this->sizeOfCurrentLayer = prevLayerOut.batchSize * prevLayerOut.channelCount * prevLayerOut.height * prevLayerOut.width;
-    this->outputOnDevice = prevLayerOut.dataOnDevice;
+    this->outputOnDevice = prevLayerOut.onDevice;
 }
 
 /// @brief Conversion of data's mem-layout happens here.
@@ -20,7 +20,7 @@ void CuFlattenedLayer::init(const float* weights, const int numberOfWeights, con
 
 float* CuFlattenedLayer::compute(const float* x)
 {
-    this->outputOnDevice = const_cast<float*>(x);
+    this->outputOnDevice = (float*)(x);
     return this->outputOnDevice;
 }
 

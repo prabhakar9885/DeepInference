@@ -40,11 +40,12 @@ void CuDenseLayer::setSizeOfInput(int sizeOfInput)
 
 void CuDenseLayer::allocMemForLayer()
 {
+    if (CuDenseLayer::handle == nullptr)
+        cublasCreate(&CuDenseLayer::handle);
     if (this->hasInputLayer())
     {
         if (cudaSuccess != cudaMallocManaged((void**)&inputDevice, this->sizeOfInput * sizeof(float)))
             throw "Unable to allocate Input memory";
-        cublasCreate(&CuDenseLayer::handle);
     }
     this->aDeviceCount = this->sizeOfCurrentLayer * this->sizeOfInput;
     if (cudaSuccess != cudaMallocManaged((void**)&aDevice, this->aDeviceCount * sizeof(float)))

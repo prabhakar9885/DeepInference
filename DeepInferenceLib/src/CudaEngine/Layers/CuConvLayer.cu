@@ -241,6 +241,7 @@ float* CuConvLayer::compute(const float* x)
         }
         delete(data);
     #endif // DEBUG
+        return cuOutput.onDevice;
 }
 
 const Tensor4D& CuConvLayer::getOutputOnDevice() const
