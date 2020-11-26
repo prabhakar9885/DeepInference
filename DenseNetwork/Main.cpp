@@ -94,17 +94,17 @@ void main()
             0, 1, 0,
             1, 0, 1,
             // Kernel-10
-            1, 0, 1,
-            1, 0, 1,
-            1, 0, 1,
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
             // Kernel-11
-            0, 1, 0,
-            0, 1, 0,
-            0, 1, 0,
-            // Kernel-12
             1, 0, 1,
+            1, 0, 1,
+            1, 0, 1,
+            // Kernel-12
             0, 1, 0,
-            1, 0, 1
+            1, 1, 1,
+            0, 1, 0
             });
         std::vector<float> bias_2(2, 0);
         weight_bias.push_back(std::move(wt_2_3_3_3));
@@ -160,5 +160,8 @@ void main()
                1, 1, 1, 1, 1, 1, 1, 1,
         });
     const float* out = nn.forward(input_3_7_8);
+    std::cout << "\n===================\n" << "Output: ";
+    for (int i = 0; i < 3; i++)
+        std::cout << std::setw(10) << out[i];
     std::cout << *out << "\n";
 }

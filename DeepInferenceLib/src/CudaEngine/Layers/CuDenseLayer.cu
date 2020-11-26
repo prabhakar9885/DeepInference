@@ -31,6 +31,7 @@ CuDenseLayer::~CuDenseLayer()
     {
         std::cerr << "Failed to destroy cublas-handle. Status code: " << cublasStatus;
     }
+    CuDenseLayer::handle = nullptr;
 }
 
 void CuDenseLayer::setSizeOfInput(int sizeOfInput)
@@ -88,11 +89,14 @@ float* CuDenseLayer::compute(const float* xDevice)
     int sizeOfPreviousLayer = this->aDeviceCount / this->sizeOfCurrentLayer;
     cublasStatus_t status;
     status = cublasSgemv(handle, CUBLAS_OP_N, this->sizeOfCurrentLayer, sizeOfPreviousLayer, &alpha, this->aDevice, this->sizeOfCurrentLayer, xDevice, 1, &beta, this->bDevice, 1);
+    cudaDeviceSynchronize();
     if (status != CUBLAS_STATUS_SUCCESS)
         throw "cuBLAS operation failure";
     if (this->activation != Activation::NONE)
+    {
         CuUtills::computeActivation(this->bDevice, this->sizeOfCurrentLayer, this->activation);
-    cudaDeviceSynchronize();
+        cudaDeviceSynchronize();
+    }
     return this->bDevice;
 }
 

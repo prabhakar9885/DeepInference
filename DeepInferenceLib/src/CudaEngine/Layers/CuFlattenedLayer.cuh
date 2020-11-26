@@ -9,12 +9,22 @@
 #include "CudaEngine/Layers/CuConvLayer.cuh"
 #include "Shared/Activation.cuh"
 
+#define checkCUDNN(expression)                               \
+  {                                                          \
+    cudnnStatus_t status = (expression);                     \
+    if (status != CUDNN_STATUS_SUCCESS) {                    \
+      std::cerr << "Error on line " << __LINE__ << ": "      \
+                << cudnnGetErrorString(status) << std::endl; \
+      std::exit(EXIT_FAILURE);                               \
+    }                                                        \
+  }
+
 class CuFlattenedLayer : public CuLayer
 {
 private:
     float* outputOnDevice = nullptr;
     int sizeOfCurrentLayer = 0;
-    CuConvLayer* prevLayer;
+    const CuConvLayer* prevLayer;
 public:
     static cublasHandle_t handle;
 
