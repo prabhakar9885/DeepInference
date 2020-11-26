@@ -1,23 +1,31 @@
 #ifndef CONVLAYER_CUH
 #define CONVLAYER_CUH
 
-#include "AbstractLayers/Layer.cuh"
-#include "AbstractLayers/ComputableLayer.cuh"
+#include "Layer.cuh"
 #include "Shared/Utills.cuh"
+#include "Shared/DataStructs.cuh"
+#include "CudaEngine/Layers/CuConvLayer.cuh"
 
-class ConvLayer final : public ComputableLayer
+class ConvLayer final : public Layer
 {
 private:
-    int padding, dilation;
+    ConvInputLayerDims convInputLayerDims;
+    bool inputSizeIsSet = false;
+    ConvLayerDims convLayerDims;
+    ConvAlgoSpecs convAlgoSpecs;
     Activation activation;
+    CuConvLayer* cuConvLayer = nullptr;
 public:
-    int inChannels, outChannels, H, W;
-
-    ConvLayer(int size, Activation activation) = delete;
-    ConvLayer(int inChannels, int outChannels, int H, int W, int padding, int stride, int dilation, Activation activation);
+    ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation);
+    ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ConvInputLayerDims&& convInputLayerDims);
+    ~ConvLayer();
+    void init(const std::vector<float>& weight, const std::vector<float>& bias) override;
     bool canBeStackedOn(const Layer* prevLayer) const;
-    void init(const std::vector<float> &weight, const std::vector<float> &bias) override;
+    bool hasInputLayer() const override;
     float* forward(const float* input) const override;
+    ConvLayerDims getSize() const;
+    const CuConvLayer* getCuLayer() const;
+    void* getOutput() const override;
 };
 
 #endif // !CONVLAYER_CUH

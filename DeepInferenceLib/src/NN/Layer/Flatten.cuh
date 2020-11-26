@@ -1,21 +1,27 @@
 #ifndef FLATTEN_CUH
 #define FLATTEN_CUH
 
-#include "NN/Layer/AbstractLayers/Layer.cuh"
-#include "NN/Layer/AbstractLayers/PlaceholderLayer.cuh"
+#include "NN/Layer/Layer.cuh"
 #include "NN/Layer/DenseLayer.cuh"
 #include "Shared/Utills.cuh"
+#include "CudaEngine/Layers/CuFlattenedLayer.cuh"
 
-class Flatten final : public PlaceholderLayer
+class Flatten final : public Layer
 {
 private:
+    float* dataOnDevice;
     int size;
-    Activation activation;
+    CuFlattenedLayer* cuFlattenedLayer = nullptr;
 public:
     Flatten();
-    void init() override;
+    int getSize() const;
+    bool hasInputLayer() const;
+    void init();
+    void init(const std::vector<float>& weight, const std::vector<float>& bias) override;
     bool canBeStackedOn(const Layer* prevLayer) const override;
     float* forward(const float* input) const override;
+    const CuFlattenedLayer* getCuLayer() const;
+    void* getOutput() const override;
 };
 
 #endif // !FLATTEN_CUH
