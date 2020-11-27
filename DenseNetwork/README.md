@@ -1,3 +1,3 @@
 
 # Sample CNN
-![CNN Architecture](CNN-Architecture.jpg)
+![CNN Architecture](images/CNN-Architecture.jpg)
