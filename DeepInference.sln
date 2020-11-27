@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeepInferenceLib", "DeepInf
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DenseNetwork", "DenseNetwork\DenseNetwork.vcxproj", "{25A1D4C7-EE1F-4639-97E7-ACA4F8FC991F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleCnnOnImage", "SampleCnnOnImage\SampleCnnOnImage.vcxproj", "{369A3D99-9795-45FE-89EA-402C007A9B35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +29,12 @@ Global
 		{25A1D4C7-EE1F-4639-97E7-ACA4F8FC991F}.Release|x64.ActiveCfg = Release|x64
 		{25A1D4C7-EE1F-4639-97E7-ACA4F8FC991F}.Release|x64.Build.0 = Release|x64
 		{25A1D4C7-EE1F-4639-97E7-ACA4F8FC991F}.Release|x86.ActiveCfg = Release|x64
+		{369A3D99-9795-45FE-89EA-402C007A9B35}.Debug|x64.ActiveCfg = Debug|x64
+		{369A3D99-9795-45FE-89EA-402C007A9B35}.Debug|x64.Build.0 = Debug|x64
+		{369A3D99-9795-45FE-89EA-402C007A9B35}.Debug|x86.ActiveCfg = Debug|x64
+		{369A3D99-9795-45FE-89EA-402C007A9B35}.Release|x64.ActiveCfg = Release|x64
+		{369A3D99-9795-45FE-89EA-402C007A9B35}.Release|x64.Build.0 = Release|x64
+		{369A3D99-9795-45FE-89EA-402C007A9B35}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
