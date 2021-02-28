@@ -42,4 +42,7 @@
     <CudaCompile Include="src\CudaEngine\Layers\CuConvLayer.cu" />
     <CudaCompile Include="src\CudaEngine\Layers\CuFlattenedLayer.cu" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
 </Project>

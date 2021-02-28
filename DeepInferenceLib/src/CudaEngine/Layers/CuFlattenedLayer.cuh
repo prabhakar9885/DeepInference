@@ -21,17 +21,23 @@
 
 class CuFlattenedLayer : public CuLayer
 {
+
 private:
     float* outputOnDevice = nullptr;
     int sizeOfCurrentLayer = 0;
     const CuConvLayer* prevLayer;
+
 public:
     static cublasHandle_t handle;
 
     CuFlattenedLayer(const CuConvLayer* prevLayer);
-    void init();
+
+    /* Layer specific methods */
+
+    /*  Overriden methods */
+    float* compute(const float* x) override;
+    void allocMemForLayer() override;
     void init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias) override; /*weights is in RMO*/
-    float* compute(const float* x);
     std::vector<float>&& getOutput() const override;
 };
 

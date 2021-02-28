@@ -7,7 +7,7 @@ ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int stride, 
     this->activation = activation;
 }
 
-ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ConvInputLayerDims&& convInputLayerDims) :
+ConvLayer::ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ImageInputLayerDims&& convInputLayerDims) :
     ConvLayer(inChannels, outChannels, H, W, stride, padding, dilation, activation)
 {
     if (convInputLayerDims.channelsPerImage != inChannels)
@@ -74,6 +74,7 @@ void ConvLayer::init(const std::vector<float>& weight, const std::vector<float>&
             this->activation
         );
     }
+    this->cuConvLayer->allocMemForLayer();
     this->cuConvLayer->init(weight.data(), weight.size(), bias.data(), bias.size());
 }
 

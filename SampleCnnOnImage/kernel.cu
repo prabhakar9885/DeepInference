@@ -54,7 +54,7 @@ int main(int argc, const char* argv[]) {
 
     // Input image spec: 7 x 8 x 3 (RGB)
     // Conv1(N, C, H, W) = (3, 3, 5, 5)    => output(C, H, W): (3, 3, 4)
-    Layer* conv1 = new ConvLayer(3, 3, 5, 5, 1, 0, 1, Activation::ReLU, ConvInputLayerDims{ 1,3,7,8 });
+    Layer* conv1 = new ConvLayer(3, 3, 5, 5, 1, 0, 1, Activation::ReLU, ImageInputLayerDims{ 1,3,7,8 });
     nn.pushLayer(conv1);
     {
         std::vector<float>&& wt_3_3_5_5 = std::initializer_list<float>({

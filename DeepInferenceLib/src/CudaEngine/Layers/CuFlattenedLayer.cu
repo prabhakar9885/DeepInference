@@ -9,9 +9,10 @@ CuFlattenedLayer::CuFlattenedLayer(const CuConvLayer* prevLayer)
     this->sizeOfCurrentLayer = prevLayerOut.batchSize * prevLayerOut.channelCount * prevLayerOut.height * prevLayerOut.width;
 }
 
-/// @brief Conversion of data's mem-layout happens here.
-void CuFlattenedLayer::init()
+
+void CuFlattenedLayer::allocMemForLayer()
 {
+
 }
 
 void CuFlattenedLayer::init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias)

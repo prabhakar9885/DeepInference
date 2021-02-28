@@ -100,12 +100,6 @@ float* CuDenseLayer::compute(const float* xDevice)
     return this->bDevice;
 }
 
-void CuDenseLayer::releaseMem()
-{
-    cudaFree(this->aDevice);
-    cudaFree(this->bDevice);
-}
-
 std::vector<float>&& CuDenseLayer::getOutput() const
 {
     return std::vector<float>(this->bDevice, this->bDevice + this->sizeOfCurrentLayer);

@@ -8,7 +8,7 @@ struct DenseLayerWeightDims {
     int prevLayerSize;
 };
 
-struct ConvInputLayerDims
+struct ImageInputLayerDims
 {
     int batchSize;          // N
     int channelsPerImage;   // C

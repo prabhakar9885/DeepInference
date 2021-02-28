@@ -13,15 +13,20 @@ private:
     Activation activation;
     CuDenseLayer* cuDenseLayer = nullptr;
     bool inputSizeIsSet = false;
+
 public:
     DenseLayer(int size, Activation activation);
     DenseLayer(int size, Activation activation, int inputSize);
     ~DenseLayer();
+
+    /* Layer specific methods */
+    int getSize() const;
+
+    /*  Overriden methods */
     void init(const std::vector<float>& weight, const std::vector<float>& bias) override;
     bool canBeStackedOn(const Layer* prevLayer) const override;
     bool hasInputLayer() const override;
     float* forward(const float* input) const override;
-    int getSize() const;
     void* getOutput() const override;
 
 };

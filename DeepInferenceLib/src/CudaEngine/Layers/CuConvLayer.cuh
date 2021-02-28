@@ -45,6 +45,9 @@ private:
     CuWorkspace cuWorkspace;
     Activation activation;
 
+    CuConvLayer(int inputChannelCount, int outputChannelCount, int heightOfChannels, int widthOfChannels,
+        int padding, int stride, int dilation, Activation activation);
+
 public:
     static cudnnHandle_t handle;
 
@@ -54,9 +57,14 @@ public:
         int padding, int stride, int dilation,
         int inputImageBatchSize, int inputImageChannels, int inputImageHeight, int inputImageWidth, Activation activation);
     ~CuConvLayer();
-    void init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias) override; /*weights is in RMO*/
-    float* compute(const float* x);
+
+    /* Layer specific methods */
     const Tensor4D& getOutputOnDevice() const;
+
+    /*  Overriden methods */
+    void allocMemForLayer() override;
+    float* compute(const float* x) override;
+    void init(const float* weights, const int numberOfWeights, const float* bias, const int numberOfBias) override; /*weights is in RMO*/
     std::vector<float>&& getOutput() const override;
 };
 

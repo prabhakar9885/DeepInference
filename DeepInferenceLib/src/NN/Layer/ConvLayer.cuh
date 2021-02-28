@@ -8,23 +8,29 @@
 
 class ConvLayer final : public Layer
 {
+
 private:
-    ConvInputLayerDims convInputLayerDims;
+    ImageInputLayerDims convInputLayerDims;
     bool inputSizeIsSet = false;
     ConvLayerDims convLayerDims;
     ConvAlgoSpecs convAlgoSpecs;
     Activation activation;
     CuConvLayer* cuConvLayer = nullptr;
+
 public:
     ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation);
-    ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ConvInputLayerDims&& convInputLayerDims);
+    ConvLayer(int inChannels, int outChannels, int H, int W, int stride, int padding, int dilation, Activation activation, ImageInputLayerDims&& convInputLayerDims);
     ~ConvLayer();
-    void init(const std::vector<float>& weight, const std::vector<float>& bias) override;
-    bool canBeStackedOn(const Layer* prevLayer) const;
-    bool hasInputLayer() const override;
-    float* forward(const float* input) const override;
+    
+    /* Layer specific methods */
     ConvLayerDims getSize() const;
     const CuConvLayer* getCuLayer() const;
+
+    /*  Overriden methods */
+    void init(const std::vector<float>& weight, const std::vector<float>& bias) override;
+    bool canBeStackedOn(const Layer* prevLayer) const override;
+    bool hasInputLayer() const override;
+    float* forward(const float* input) const override;
     void* getOutput() const override;
 };
 
