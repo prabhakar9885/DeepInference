@@ -107,13 +107,13 @@ int main(int argc, const char* argv[]) {
              0, -1,  0, -1,  0,
             -1,  0,  0,  0, -1,
             // Kernel-22
-             0,  0, -1,  0,  0,
-             0,  0, -1,  0,  0,
-            -1, -1, -1, -1, -1,
-             0,  0, -1,  0,  0,
-             0,  0, -1,  0,  0,
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
+            1, 1, 1, 1, 1,
+            0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0,
             });
-        std::vector<float> bias_3(3, 0);
+        std::vector<float> bias_3 = std::initializer_list<float>({ -10, -20, -30 });
         weight_bias.push_back(std::move(wt_3_3_5_5));
         weight_bias.push_back(std::move(bias_3));
     }
@@ -148,7 +148,7 @@ int main(int argc, const char* argv[]) {
             1, 1, 1,
             0, 1, 0
             });
-        std::vector<float> bias_2(2, 0);
+        std::vector<float> bias_2 = std::initializer_list<float>({ 1, 2 });
         weight_bias.push_back(std::move(wt_2_3_3_3));
         weight_bias.push_back(std::move(bias_2));
     }
@@ -175,7 +175,7 @@ int main(int argc, const char* argv[]) {
     nn.init(weight_bias);
 
     // Size of input (C, H, W): (3, 7, 8)
-    std::vector<float> input = load_image("./Vision.jpg");
+    std::vector<float> input = std::vector<float>(3 * 7 * 8, 1); //load_image("./Vision.jpg");
 
     const float* out = nn.forward(input);
     std::cout << "\n===================\n" << "Output: ";

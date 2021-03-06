@@ -38,9 +38,12 @@ struct CuKernel
     int inChannels;         //  (C) Number of Input channels
     int heightOfChannel;    //  (H) Height of the channel
     int widthOfChannel;     //  (W) Width of the channel
-    cudnnFilterDescriptor_t descriptor;
-    float* onDevice;
-    size_t sizeInBytes;
+    cudnnFilterDescriptor_t weightDescriptor;
+    float* weightOnDevice;
+    size_t sizeofWeightsInBytes;
+    cudnnTensorDescriptor_t biasDescriptor;
+    float* biasOnDevice;
+    size_t sizeofBiasInBytes;
 };
 
 struct CuWorkspace
