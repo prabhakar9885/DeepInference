@@ -23,7 +23,6 @@
     }                                                        \
   }
 
-
 #define checkCUDA(expression)                               \
   {                                                          \
     cudaError_t status = (expression);                     \
