@@ -172,7 +172,8 @@ int main(int argc, const char* argv[]) {
     weight_bias.push_back(std::move(std::vector<float>(3 * 4, 1)));
     weight_bias.push_back(std::move(std::vector<float>(3, 1)));
 
-    nn.init(weight_bias);
+    //nn.init(weight_bias);
+    nn.init("WeightsAndBiases.txt");
 
     // Size of input (C, H, W): (3, 7, 8)
     std::vector<float> input = std::vector<float>(3 * 7 * 8, 1); //load_image("./Vision.jpg");

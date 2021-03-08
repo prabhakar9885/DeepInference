@@ -71,6 +71,50 @@ void NN::init(const std::vector<std::vector<float>>& weightsAndBias) const
     }
 }
 
+void NN::init(std::string fileContaingWeightsAndBias) const
+{
+    std::ifstream inputFileStream;
+    inputFileStream.open(fileContaingWeightsAndBias, std::ios::in | std::ios::out);
+    std::vector < std::vector<float> > vecOfStringvecs;
+    std::vector<float> rowVector;
+
+    if (!inputFileStream.good())
+    {
+        throw "Failed to read the WeightsAndBiases from the file";
+    }
+
+    bool endOfWeightsOrBias = false;
+    for (std::string data; getline(inputFileStream, data); ) 
+    {
+        std::istringstream linestr(data);
+        bool skipThisLine = false;
+        for (std::string token; std::getline(linestr, token, ','); ) 
+        {
+            Utills::StringUtils::trim(token);
+            if (token.find('=') != std::string::npos) 
+            {
+                skipThisLine = true;
+                break;
+            }
+            if (token.find('x') != std::string::npos)
+            {
+                endOfWeightsOrBias = true;
+                break;
+            }
+            rowVector.push_back(stof(token));
+        }
+        if (skipThisLine)
+            continue;
+        if (endOfWeightsOrBias)
+        {
+            vecOfStringvecs.push_back(rowVector);
+            rowVector.clear();
+            endOfWeightsOrBias = false;
+        }
+    }
+    this->init(vecOfStringvecs);
+}
+
 const float* NN::forward(const std::vector<float>& input_sample) const
 {
     auto currentLayerIterator = this->layers.begin();
