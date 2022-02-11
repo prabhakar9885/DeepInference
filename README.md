@@ -4,7 +4,8 @@ A C++ library to acceralarte the task of inference by liveraging the Nvidia GPU,
 
 # Prerequisites
 - Nvidia GPU
-- CUDA ( preferabbly latest version )
+- CUDA  v10.2
+- cuDNN v7.6.5.32 for CUDA v10.2
 
 # Contents
 The repo has the following projects
