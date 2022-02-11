@@ -64,7 +64,7 @@ void CuUtills::addBiasForNHWC(float*& arr, float*& bias, int N, int H, int W, in
 	
 	int* logsDevice;	
 	gpuErrchk(cudaMalloc((void**)&logsDevice, sizeof(int) * N * W * C * H * 5));
-	gpuErrchk(cudaPeekAtLastError());
+	//gpuErrchk(cudaPeekAtLastError());
 
 	kernals::addBiasForNHWC << <blockCount, maxNumberOfThreadsPerBlock >> > (arr, bias, N, H, W, C, logsDevice);
 	cudaDeviceSynchronize();

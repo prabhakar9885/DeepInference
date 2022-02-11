@@ -60,6 +60,7 @@
     </CudaCompile>
     <CudaLink>
       <AdditionalDependencies>cudnn.lib;cudart.lib;cublas.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\lib\x64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

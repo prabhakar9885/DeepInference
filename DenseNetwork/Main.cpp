@@ -162,6 +162,6 @@ void main()
     const float* out = nn.forward(input_3_7_8);
     std::cout << "\n===================\n" << "Output: ";
     for (int i = 0; i < 3; i++)
-        std::cout << std::setw(10) << out[i];
+        std::cout << std::setw(15) << out[i];
     std::cout << *out << "\n";
 }
